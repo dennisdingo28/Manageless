@@ -10,3 +10,19 @@
     padding-right: 15px;
   }
 }
+@media (min-width:1280px){
+  .container{
+    max-width: 1280px;
+  }
+}
+
+.line{
+  transition: all 0.2s;
+}
+.line1.activeLine{
+  transform: rotate(45deg);
+}
+.line2.activeLine{
+  transform: rotate(-45deg) translateY(-5px) translateX(4px);
+
+}
