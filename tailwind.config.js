@@ -8,6 +8,7 @@ module.exports = {
   theme: {
     fontFamily:{
       poppins:["Poppins","sans-serif"],
+      montserrat:["Montserrat","sans-serif"],
     },
     screens: {
       'sm': '640px',
