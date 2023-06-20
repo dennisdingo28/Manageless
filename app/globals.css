@@ -6,6 +6,7 @@
 
 @media (max-width:640px){
   .container {
-    padding: 0px 15px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
