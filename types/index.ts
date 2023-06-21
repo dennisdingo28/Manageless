@@ -18,3 +18,11 @@ export interface TextBoxProps {
     text?: string;
     links?: Array<LinkProps>;
 }
+export interface AuthorProps {
+    authorName: string;
+    authorDescription?: string;
+    authorEmail: string;
+    authorRole?: string;
+    authorGithub?: string;
+    authorDiscord?: string;
+}

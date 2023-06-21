@@ -21,7 +21,7 @@ const Navbar = () => {
                 </div>
             </div>
             
-            <div className={`w-full duration-100 ${toggleMenu ? "h-[4.5em] opacity-100 z-0":"h-0 opacity-0 -z-10"} sm:hidden mt-1`}>
+            <div className={`w-full duration-100 ${toggleMenu ? "h-[4.5em] opacity-100 z-0 pointer-events-auto":"h-0 opacity-0 -z-10 pointer-events-none"} sm:hidden mt-1`}>
                 <div className="linkContainer gap-3 flex items-center flex-col justify-center">
                     <div className="flex gap-6 justify-center items-center">
                         <Link href={"/"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Home</Link>
