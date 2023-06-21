@@ -26,7 +26,7 @@ const Navbar = () => {
                     <div className="flex gap-6 justify-center items-center">
                         <Link href={"/"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Home</Link>
                         <Link href={"/docs"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Docs</Link>
-                        <Link href={"/pricing"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Pricing</Link>
+                        <Link href={"/projects"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Projects</Link>
                     </div>
                     <CustomButton text="Sign In" classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
                 </div>
@@ -41,7 +41,7 @@ const Navbar = () => {
                 <div className="flex gap-4">
                     <Link href={"/"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Home</Link>
                     <Link href={"/docs"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Docs</Link>
-                    <Link href={"/pricing"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Pricing</Link>
+                    <Link href={"/projects"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Projects</Link>
                 </div>
                 <CustomButton text="Sign In" classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
             </div>

@@ -40,7 +40,7 @@ const Author = ({authorName,authorDescription,authorRole,authorGithub,authorDisc
             <div className="self-center mt-2">
                 <CustomButton text="contact me" handleClick={()=>setToggleContact(prev=>!prev)} classes="bg-white text-darkBlue font-medium text-[1.1em] rounded-lg p-1 border-2 border-white hover:text-white hover:bg-transparent duration-75"/>
             </div>
-            <div className={`contactAuthor duration-100 opacity-0 h-0 mt-6 -z-10 pointer-events-none ${toggleContact && "opacity-100 z-0 h-[200px] pointer-events-auto"}`}>
+            <div className={`contactAuthor duration-100 opacity-0 h-0 mt-6 -z-10 pointer-events-none ${toggleContact && "opacity-100 z-0 h-[250px] pointer-events-auto"}`}>
                 <div className="flex flex-col gap-5">
                     <div className="userDetails flex flex-col items-center justify-center sm:flex-row gap-5">
                         <input type="text" placeholder="name" className=" bg-transparent w-full border-b outline-none pl-1 text-gray-300 placeholder:text-gray-200 font-extralight"/>

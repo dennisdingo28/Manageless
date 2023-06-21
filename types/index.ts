@@ -26,3 +26,9 @@ export interface AuthorProps {
     authorGithub?: string;
     authorDiscord?: string;
 }
+export interface AnnounceProps {
+    text: string;
+}
+export interface LinksArrayProps {
+    links:Array<LinkProps>;
+}
