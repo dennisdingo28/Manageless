@@ -2,6 +2,7 @@ export interface CustomButtonProps {
     text?: string;
     handleClick?: ()=>void;
     classes?: string;
+    disabled?: boolean;
 }
 export interface CricleProps {
     circleWidth: number;
@@ -31,4 +32,9 @@ export interface AnnounceProps {
 }
 export interface LinksArrayProps {
     links:Array<LinkProps>;
+}
+export interface FormDataProps {
+    name?: string;
+    email?: string;
+    description?: string;
 }

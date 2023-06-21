@@ -19,7 +19,7 @@ const Footer = ({links}:LinksArrayProps) => {
                     <div className="footerLinks">
                         <div className="flex flex-wrap justify-between gap-3 md:gap-11">
                             {links.map(link=>(
-                                <Link href={link.url} className="lowercase font-light hover:text-lightBlue">{link.text}</Link>
+                                <Link key={link.text} href={link.url} className="lowercase font-light hover:text-lightBlue">{link.text}</Link>
                             ))}
                         </div>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
