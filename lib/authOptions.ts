@@ -2,6 +2,7 @@ import {NextAuthOptions} from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import connectDb from "./connectDB";
 import { User } from "@/models/User";
+import { getServerSession } from "next-auth";
 
 function getGoogleCredintials(){
     const clientId = process.env.GOOGLE_CLIENTID;
@@ -16,6 +17,9 @@ function getGoogleCredintials(){
 }
 
 export const authOptions: NextAuthOptions = {
+    session:{
+        strategy: "jwt"
+    },
     providers:[
         GoogleProvider({
             clientId:getGoogleCredintials().clientId,
@@ -70,3 +74,5 @@ export const authOptions: NextAuthOptions = {
         }
     }
 }
+
+export const getAuthSession = ()=>getServerSession(authOptions);

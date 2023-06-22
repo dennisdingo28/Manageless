@@ -50,3 +50,13 @@ export interface UserSchemaProps {
     token: string;
     projects: Array<ProjectProps>
 }
+export interface SessionUser {
+    user: {
+        name: string;
+        email: string;
+        image: string;
+        token: string;
+        _id: string;
+    },
+    expires: Date;
+}
