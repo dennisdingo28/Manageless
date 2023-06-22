@@ -5,7 +5,7 @@ export async function POST(req:NextRequest){
     try{
         const data = await req.json();
         if(Object.keys(data).length===0 || !data)
-            throw new Error("Data for sending the email was found empty.Please fill in the inputs.");
+            throw new Error("Data for sending the email was found empty. Please fill in the inputs.");
         
         const transporter = nodemailer.createTransport({
             service:"gmail",
@@ -27,7 +27,6 @@ export async function POST(req:NextRequest){
         return NextResponse.json({ok:true,msg:"Email was successfully sent to the developer !"});
 
     }catch(err){
-        console.log(err);
-        
+        return NextResponse.json({ok:false,msg:(err as Error).message});
     }
 }

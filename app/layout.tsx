@@ -1,4 +1,5 @@
 import './globals.css'
+import AuthProvider from '@/components/AuthProvider'
 
 export const metadata = {
   title:"Manageless",
@@ -16,7 +17,9 @@ export default function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"/>
       </head>
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )

@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 export interface CustomButtonProps {
     text?: string;
     handleClick?: ()=>void;
@@ -37,4 +39,14 @@ export interface FormDataProps {
     name?: string;
     email?: string;
     description?: string;
+}
+export interface ProjectProps{
+    _id: mongoose.ObjectId;
+}
+export interface UserSchemaProps {
+    name: string;
+    email: string;
+    image: string;
+    token: string;
+    projects: Array<ProjectProps>
 }

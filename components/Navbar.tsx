@@ -3,9 +3,11 @@
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
 import { useState } from "react";
+import {signIn,useSession} from "next-auth/react";
 
 const Navbar = () => {
     const [toggleMenu,setToggleMenu] = useState<boolean>(false);
+    const {data: session,status} = useSession();
     
   return (
     <nav className="navbar text-white container mx-auto py-5">
@@ -28,7 +30,7 @@ const Navbar = () => {
                         <Link href={"/docs"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Docs</Link>
                         <Link href={"/projects"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Projects</Link>
                     </div>
-                    <CustomButton text="Sign In" classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
+                    <CustomButton text="Sign In" handleClick={()=>{signIn("google")}} classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
                 </div>
             </div>
         </div>        
@@ -43,7 +45,7 @@ const Navbar = () => {
                     <Link href={"/docs"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Docs</Link>
                     <Link href={"/projects"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Projects</Link>
                 </div>
-                <CustomButton text="Sign In" classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
+                <CustomButton text="Sign In" handleClick={()=>{signIn("google")}} classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
             </div>
         </div>
 
