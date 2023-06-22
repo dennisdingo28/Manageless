@@ -4,7 +4,6 @@ import nodemailer from "nodemailer";
 export async function POST(req:NextRequest){
     try{
         const data = await req.json();
-        console.log(data);
         if(Object.keys(data).length===0 || !data)
             throw new Error("Data for sending the email was found empty.Please fill in the inputs.");
         

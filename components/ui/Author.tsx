@@ -28,6 +28,9 @@ const Author = ({authorName,authorDescription,authorRole,authorGithub,authorDisc
         description:"",});
         setErrors({});
         setValidated(false);
+        setTimeout(()=>{
+            setSubmitted(false);
+        },1000)
         setFormMessage("");
     }
 
@@ -73,8 +76,7 @@ const Author = ({authorName,authorDescription,authorRole,authorGithub,authorDisc
                 </div>
                 <div className="flex items-center justify-center mt-6"> 
                     <div className="cursor-pointer flex flex-col gap-2">
-                        <div className="flex items-center justify-center gap-1">
-                            <CustomButton text="send" handleClick={async ()=>{
+                        <div className={`flex items-center justify-center gap-1 ${submitted && "pointer-events-none"}`} onClick={async ()=>{
                                 setFormMessage("Loading...")
                                 setSubmitted(true);
                                 const response = validateForm(inputs);
@@ -96,7 +98,8 @@ const Author = ({authorName,authorDescription,authorRole,authorGithub,authorDisc
                                 setTimeout(clearInputs,2000)
                                 console.log(response);
                                 
-                            }} disabled={validated}/>
+                            }}>
+                            <CustomButton text="send"/>
                             <i className={`bi bi-send ${validated && "-translate-y-5 translate-x-6 opacity-0"} duration-100`}></i>
                         </div>
                         {submitted && (

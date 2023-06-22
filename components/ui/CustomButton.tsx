@@ -1,9 +1,9 @@
 
 import { CustomButtonProps } from "@/types"
 
-const CustomButton = ({text,handleClick,classes}:CustomButtonProps) => {
+const CustomButton = ({text,handleClick,classes,disabled}:CustomButtonProps) => {
   return (
-    <button className={classes} onClick={handleClick}>{text}</button>
+    <button className={classes} onClick={handleClick} disabled={disabled}>{text}</button>
   )
 }
 
