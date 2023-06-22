@@ -25,7 +25,7 @@ export async function POST(req:NextRequest){
 
         await transporter.sendMail(mailOptions);
 
-        return NextResponse.json({ok:true,msg:"Email was successfully sent to the developer"});
+        return NextResponse.json({ok:true,msg:"Email was successfully sent to the developer !"});
 
     }catch(err){
         console.log(err);

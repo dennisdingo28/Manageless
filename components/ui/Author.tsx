@@ -75,10 +75,12 @@ const Author = ({authorName,authorDescription,authorRole,authorGithub,authorDisc
                     <div className="cursor-pointer flex flex-col gap-2">
                         <div className="flex items-center justify-center gap-1">
                             <CustomButton text="send" handleClick={async ()=>{
+                                setFormMessage("Loading...")
                                 setSubmitted(true);
                                 const response = validateForm(inputs);
                                 if(response.valid){
                                     setValidated(true);
+                                    
                                     const sendEmail = await axios.post('/api/sendEmail',inputs);
                                     console.log(sendEmail);
                                     const sendObject = sendEmail.data;
