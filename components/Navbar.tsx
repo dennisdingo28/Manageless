@@ -3,17 +3,16 @@
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
 import { useEffect, useState } from "react";
-import {signIn} from "next-auth/react";
+import {signIn, signOut} from "next-auth/react";
 import { useContext } from "react";
 import {useSession} from "next-auth/react";
 import {Session} from "next-auth";
-import { getAuthSession } from "@/lib/authOptions";
+import UserProfile from "./UserProfile";
 
-const Navbar = async () => {
+const Navbar = () => {
     const [toggleMenu,setToggleMenu] = useState<boolean>(false);
-    
-    const session = await getAuthSession();
-    console.log(session);
+    const {data:session,status} = useSession();
+    console.log(session,status);
     
   return (
     <nav className="navbar text-white container mx-auto py-5">
@@ -51,7 +50,18 @@ const Navbar = async () => {
                     <Link href={"/docs"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Docs</Link>
                     <Link href={"/projects"} className="font-thin lowercase hover:text-lightBlue text-[1.2em] duration-75">Projects</Link>
                 </div>
-                <CustomButton text="Sign In" handleClick={()=>{signIn("google")}} classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
+                <div className="ml-4">
+                    {status==="loading" ? <p>loading...</p>:status==="unauthenticated" ? (
+                        <CustomButton text="Sign In" handleClick={()=>{signIn("google")}} classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
+                    ):(
+                        <div className="flex items-center gap-2">
+                             <UserProfile name={session?.user?.name} email={session?.user?.email} image={session?.user?.image}/>
+                            <CustomButton text="sign out" classes="bg-blue-500 p-2 rounded-md" handleClick={signOut}/>
+                        </div>
+                       
+                    )}
+                </div>
+               
                 
             </div>
         </div>

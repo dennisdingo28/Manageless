@@ -50,6 +50,11 @@ export interface UserSchemaProps {
     token: string;
     projects: Array<ProjectProps>
 }
+export interface SessionUserProps{
+    name: string | undefined | null;
+    email: string | undefined | null;
+    image: string | undefined | null;
+}
 export interface SessionUser {
     user: {
         name: string;
