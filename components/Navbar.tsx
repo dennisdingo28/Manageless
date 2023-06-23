@@ -54,11 +54,10 @@ const Navbar = () => {
                     {status==="loading" ? <p>loading...</p>:status==="unauthenticated" ? (
                         <CustomButton text="Sign In" handleClick={()=>{signIn("google")}} classes="bg-darkBlue ml-5 px-2 py-1 rounded-md font-poppins cursor-pointer hover:bg-lightBlue"/>
                     ):(
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col items-center gap-2">
                              <UserProfile name={session?.user?.name} email={session?.user?.email} image={session?.user?.image}/>
                             <CustomButton text="sign out" classes="bg-blue-500 p-2 rounded-md" handleClick={signOut}/>
                         </div>
-                       
                     )}
                 </div>
                

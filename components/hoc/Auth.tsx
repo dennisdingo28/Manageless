@@ -10,7 +10,7 @@ const Auth = ({children}:{children:ReactNode}) => {
     if(status==="loading")
     {
         return (
-            <h1 className="text-center text-[1.8em] font-bold">Loading the dashboard...</h1>
+            <h1 className="text-center text-[1.8em] font-bold">Loading the content...</h1>
         )
     }
 

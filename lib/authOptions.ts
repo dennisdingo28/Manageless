@@ -3,6 +3,7 @@ import GoogleProvider from "next-auth/providers/google";
 import connectDb from "./connectDB";
 import { User } from "@/models/User";
 import { getServerSession } from "next-auth";
+import generateApiKey from "./generateApiKey";
 
 function getGoogleCredintials(){
     const clientId = process.env.GOOGLE_CLIENTID;
@@ -37,7 +38,11 @@ export const authOptions: NextAuthOptions = {
                     if(!existingUser)
                     {
                         delete user.id;
-                        const newUser = await User.create(user);
+                        const apiKey = generateApiKey();
+                        user.apiKey = apiKey;
+                        
+                        
+                        const newUser = await User.create({name:user.name,email:user.email,image:user.image,apiKey:user.apiKey});
                     }
                 }
                 else throw new Error("Cannot connected to the database!");
@@ -63,8 +68,8 @@ export const authOptions: NextAuthOptions = {
                 
                 if (session.user && currentUser) {
                     session.user._id = String(currentUser._id);
+                    session.user.projects = currentUser.projects;
                 }
-                console.log(session);
                 
             }catch(err){
                 console.log(err);

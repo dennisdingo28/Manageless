@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 export interface CustomButtonProps {
     text?: string;
@@ -49,6 +49,7 @@ export interface UserSchemaProps {
     email: string;
     image: string;
     token: string;
+    apiKey: string;
     projects: Array<ProjectProps>
 }
 export interface SessionUserProps{
@@ -70,4 +71,11 @@ export interface InfoCardProps {
     cardTitle: string;
     cardBody?: ReactNode;
     cardFooter?: ReactNode;
+}
+export interface ModalProps {
+    modalTitle: string;
+    modalDescription: string;
+    isOpen: boolean;
+    setIsOpen: Dispatch<SetStateAction<boolean>>;
+    
 }

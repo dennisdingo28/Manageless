@@ -14,7 +14,10 @@ const UserSchema = new Schema<UserSchemaProps>({
         type: String,
         required:[true,"No profile image was provided"],
     },
-    
+    apiKey:{
+        type: String,
+        required:[true,"Cannot generate an api key. Please try again later!"]
+    },
     projects:[
         
     ]
