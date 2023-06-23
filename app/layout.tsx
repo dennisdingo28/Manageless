@@ -1,3 +1,4 @@
+import Navbar from '@/components/Navbar'
 import './globals.css'
 import AuthProvider from '@/components/AuthProvider'
 
@@ -18,6 +19,9 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
+          <div className="bg-darkBlack">
+            <Navbar/>
+          </div>
           {children}
         </AuthProvider>
       </body>

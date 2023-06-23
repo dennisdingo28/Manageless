@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ReactNode } from "react";
 
 export interface CustomButtonProps {
     text?: string;
@@ -64,4 +65,9 @@ export interface SessionUser {
         _id: string;
     },
     expires: Date;
+}
+export interface InfoCardProps {
+    cardTitle: string;
+    cardBody?: ReactNode;
+    cardFooter?: ReactNode;
 }

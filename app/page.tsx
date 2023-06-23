@@ -9,7 +9,6 @@ export default function Home() {
   return (
     <main className="">
       <div className="landingContent bg-darkBlack">
-        <Navbar/>
         <Hero/>
       </div>
       <div>
