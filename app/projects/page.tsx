@@ -13,7 +13,6 @@ const page =  () => {
     const [userKey,setUserKey] = useState<string>("");
     const [copied,setCopied] = useState<boolean>(false);
     const [openModal,setOpenModal] = useState<boolean>(false);
- 
     
 
     useEffect(()=>{
@@ -71,16 +70,21 @@ const page =  () => {
               </div>
             </div>
             <div className="container mx-auto mt-10">
-              <h3 className="font-bold text-left text-[1.65em] tracking-wide">Projects</h3>
+              <div className={`${session?.user?.projects.length!==0 && "flex items-center justify-between"}`}>
+                <h3 className="font-bold text-left text-[1.65em] tracking-wide">Projects</h3>
+                {session?.user?.projects.length!==0 && (
+                    <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="bg-darktBlue px-2 py-1 font-medium whitespace-nowrap cursor-pointer hover:text-darkBlue hover:-translate-y-1 duration-100"/>
+                )}
+              </div>
               <section>
-                {session?.user?.projects.length===0 ? (
+                { session?.user?.projects.length===0 ? ( 
                   <div className="flex items-center gap-1">
                     <p className="font-thin whitespace-nowrap">No current projects.</p>
                     <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="bg-darktBlue px-2 py-1 font-medium whitespace-nowrap cursor-pointer hover:text-darkBlue hover:-translate-y-1 duration-100"/>
                   </div>
-                ):(
-                  <p>your projects</p>
-                )}
+                 ):(
+                <p>your projects</p>
+                 )} 
               </section>
             </div>
         </div>

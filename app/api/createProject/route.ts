@@ -1,8 +1,9 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import decodeToken from "@/lib/decodeJWT";
 import { User } from "@/models/User";
 import { JwtPayload } from "jsonwebtoken";
 import { Project } from "@/models/Project";
+import mongoose from "mongoose";
 
 export async function POST(req:NextRequest){
     try{
@@ -25,10 +26,11 @@ export async function POST(req:NextRequest){
             throw new Error("User api key doesn't match with the provided one.");
         
         const newProject = await Project.create({projectTitle:"test",projectPassword:"1234"});
-        console.log(newProject);
-        
+        const updatedUser = await User.findOneAndUpdate({email:decodedUser.email,name:decodedUser.name},{projects:[...findUser.projects,newProject._id]},{new:true,runValidators:true}).populate("projects").select("-apiKey");
+        console.log(updatedUser);
+
         console.log("all ok");
-        
+        return NextResponse.json({ok:true,updatedUser});
     }catch(err){
         console.log(err);
     }

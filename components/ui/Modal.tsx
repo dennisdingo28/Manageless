@@ -42,6 +42,9 @@ const Modal = ({ modalTitle,modalDescription,apiKey,isOpen, setIsOpen }: ModalPr
           throw new Error("Something went wrong while trying to access you account. Please try again later.");
 
         const req = await axios.post(`/api/createProject`,{token:userToken,apiKey});
+        console.log(req);
+        if(req.data.ok)
+          window.location.reload();
       }catch(err){
         console.log(err);
       }
