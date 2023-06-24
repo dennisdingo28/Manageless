@@ -45,7 +45,7 @@ const page =  () => {
   return (
     <Auth>
          
-        <Modal isOpen={openModal} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(session?.user?.projects.length)}`}/>
+        <Modal isOpen={openModal} apiKey={userKey} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(session?.user?.projects.length)}`}/>
  
         <div className="bg-[#161617] min-h-[100vh] text-white">
             <div className="sm:container sm:mx-auto">

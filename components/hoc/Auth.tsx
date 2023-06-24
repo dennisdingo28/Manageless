@@ -19,12 +19,15 @@ const Auth = ({children}:{children:ReactNode}) => {
             <h1 className="text-center text-[1.8em] font-bold">You are not authenticated</h1>
         )
     }
-
-    return (
-        <div className="">
-            {children}
-        </div>
-    )
+    if(status==="authenticated"){
+        localStorage.setItem('token',JSON.stringify(session?.user?.token));
+        return (
+            <div className="">
+                {children}
+            </div>
+        )
+    }
+    
     
  
 }

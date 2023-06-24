@@ -5,9 +5,9 @@ import { ModalProps } from '@/types';
 import Input from './Input';
 import { useState } from 'react';
 import { useFormValidation } from '@/hooks/useFormValidation';
-import { FormDataProps } from '@/types';
+import axios from 'axios';
 
-const Modal = ({ modalTitle,modalDescription, isOpen, setIsOpen }: ModalProps) => {
+const Modal = ({ modalTitle,modalDescription,apiKey,isOpen, setIsOpen }: ModalProps) => {
   let completeButtonRef = useRef(null);
   const [inputProjectName,setInputProjectName] = useState<string>("");
   const [inputProjectPassword,setInputProjectPassword] = useState<string>("");
@@ -36,6 +36,15 @@ const Modal = ({ modalTitle,modalDescription, isOpen, setIsOpen }: ModalProps) =
     if(validatedInputs.valid){
       setValidInputs(true);
       setFormMessage("Creating your project...");
+      try{
+        const userToken = JSON.parse(localStorage.getItem('token') || "");
+        if(userToken.trim()==="" || !userToken)
+          throw new Error("Something went wrong while trying to access you account. Please try again later.");
+
+        const req = await axios.post(`/api/createProject`,{token:userToken,apiKey});
+      }catch(err){
+        console.log(err);
+      }
     }else{
       setValidInputs(false);
       setFormMessage(validatedInputs.errors?.name || validatedInputs.errors?.password || "Something went wrong while trying to create your project. Please try again later.")
