@@ -1,4 +1,5 @@
 "use client"
+
 import Auth from "@/components/hoc/Auth"
 import InfoCard from "@/components/pages/Projects/InfoCard"
 import CustomButton from "@/components/ui/CustomButton"
@@ -6,14 +7,14 @@ import Modal from "@/components/ui/Modal"
 import axios from "axios"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
-import {Transition} from "@headlessui/react"
-import { Fragment } from "react"
 
 const page =  () => {
     const {data:session,status} = useSession();
     const [userKey,setUserKey] = useState<string>("");
     const [copied,setCopied] = useState<boolean>(false);
     const [openModal,setOpenModal] = useState<boolean>(false);
+ 
+    
 
     useEffect(()=>{
       async function getUserApiKey(){
@@ -44,9 +45,8 @@ const page =  () => {
   return (
     <Auth>
          
-          <Modal isOpen={openModal} setIsOpen={setOpenModal} modalTitle="Create Project" modalDescription="test project description"/>
-
-         
+        <Modal isOpen={openModal} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(session?.user?.projects.length)}`}/>
+ 
         <div className="bg-[#161617] min-h-[100vh] text-white">
             <div className="sm:container sm:mx-auto">
               <div className="dashboardHeader flex flex-col md:flex-row pt-6 gap-4">

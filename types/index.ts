@@ -40,6 +40,7 @@ export interface FormDataProps {
     name?: string;
     email?: string;
     description?: string;
+    password?: string;
 }
 export interface ProjectProps{
     _id: mongoose.ObjectId;
@@ -77,5 +78,11 @@ export interface ModalProps {
     modalDescription: string;
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
-    
+}
+export interface InputProps {
+    inputValue: string;
+    setInputValue: Dispatch<SetStateAction<string>> | undefined;
+    inputPlaceholder?: string;
+    type?: string;
+    isDisabled: boolean;
 }

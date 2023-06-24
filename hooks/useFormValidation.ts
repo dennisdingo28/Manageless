@@ -29,6 +29,14 @@ function validateForm(formData:FormDataProps){
         }
     }
 
+    if(formData.password || formData.password?.length===0){
+
+        const empty= checkEmpty(formData.password);
+        
+        if(empty)
+            addNewError("password","Password is blank");
+    }
+
     if(formData.description || formData.description?.length===0){
         const empty = checkEmpty(formData.description);
 
