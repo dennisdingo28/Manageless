@@ -3,6 +3,7 @@ import decodeToken from "@/lib/decodeJWT";
 import { JwtPayload } from "jsonwebtoken";
 import { Project } from "@/models/Project";
 import { User } from "@/models/User";
+import mongoose from "mongoose";
 
 export async function POST(req:NextRequest,{params}:{params:{id:string}}){
     try {
@@ -14,6 +15,10 @@ export async function POST(req:NextRequest,{params}:{params:{id:string}}){
             throw new Error("Payload was empty. Please try again later.");
         if(!projectId)
             throw new Error(`Cannot edit any post with the id of ${projectId}`);
+        if(!data.newTitle)
+            throw new Error('Cannot edit with an empty title. Please fill in the fields.');
+        if(!data.password)
+            throw new Error('You must provide the password to edit the project.');
         if(!token || token.trim()==='')
             throw new Error('No token was provided. Please try again later');
         const decodedUser = await decodeToken(data.token) as JwtPayload;
@@ -22,18 +27,16 @@ export async function POST(req:NextRequest,{params}:{params:{id:string}}){
         const targetProject = await Project.findById({_id:projectId});
 
         if(targetProject.projectPassword===data.password){
-            console.log(targetProject);
             const updatedTargetProject = await Project.findByIdAndUpdate({_id:projectId},{projectTitle:data.newTitle},{new:true,runValidators:true});
-            console.log(updatedTargetProject);
             const updatedUser = await User.findOne({email:decodedUser.email,name:decodedUser.name}).populate("projects");
-            console.log(updatedUser);
             
             return NextResponse.json({ok:true,updatedProject:updatedTargetProject,updatedUser});
         }
         throw new Error("Password doesn't match.");
         
     } catch (error) {
-        console.log(error);
+        if(error instanceof mongoose.Error.CastError)
+            return NextResponse.json({ok:false,msg:"Something went wrong while trying to access your account. Please try again later"});
         return NextResponse.json({ok:false,msg:(error as Error).message});
     }
 }

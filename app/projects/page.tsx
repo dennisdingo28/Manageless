@@ -104,7 +104,7 @@ const page =  () => {
                     <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="bg-darktBlue px-2 py-1 font-medium whitespace-nowrap cursor-pointer hover:text-darkBlue hover:-translate-y-1 duration-100"/>
                   </div>
                  ):(
-                  <div className="flex flex-col flex-wrap mt-6 md:flex-row">
+                  <div className="flex flex-col flex-wrap gap-4 mt-6 md:flex-row">
                       {user?.projects.map(project=>(
                           <ProjectCard key={`${project._id}`} setUser={setUser} deleteProject={deleteProject} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
                       ))}

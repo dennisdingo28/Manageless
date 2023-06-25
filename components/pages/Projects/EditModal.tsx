@@ -44,12 +44,14 @@ const EditModal = ({ modalTitle,modalDescription,setUser,projectTitle,projectId,
                 
                 if(req.data.ok){
                     if(setUser)
-                        setUser(req.data.updatedUser);
-                }
+                        setUser(req.data.updatedUser); 
+                }else setFormMessage(req.data.msg);
             }catch(err){
+                setFormMessage("Something went wrong while trying to edit. Please try again later.");
                 console.log(err);
-                
             }
+        }else{
+            setFormMessage(validatedInputs.errors?.title || validatedInputs.errors?.password || "Something went wrong while trying to edit. Please try again later.")
         }
         setTimeout(()=>{  
             clearForm();
