@@ -17,14 +17,12 @@ const page =  () => {
     const [openModal,setOpenModal] = useState<boolean>(false);
     const [userKey,setUserKey] = useState<string>("");
     const [user,setUser] = useState<User>();
-    console.log('user change',user);
     
 
     useEffect(()=>{
       async function getUserApiKey(){
         if(status==="authenticated"){
           const user = await axios.get(`http://localhost:3000/api/getUser/${session?.user?._id}`);
-          console.log(user,"done");
           
           if(user.data.ok){
             setUserKey(user.data.user.apiKey);
@@ -37,7 +35,6 @@ const page =  () => {
     
     async function handleCopy(){
       const clipboardText = await navigator.clipboard.readText();
-      console.log(clipboardText);
       if(clipboardText!==`${user?.apiKey}`){
         await navigator.clipboard.writeText(`${user?.apiKey}`);
       }
@@ -86,7 +83,10 @@ const page =  () => {
                     </div>
                   </div>
                 } cardFooter={<small className="text-gray-400">make sure you do not share the key with anyone</small>}/>
-                <InfoCard cardTitle="Current Projects" cardBody={<p>test body</p>} cardFooter={<p>test footer</p>}/>
+                <InfoCard cardTitle="Current Projects" cardBody={
+                <div className="my-3">
+                  <p className="text-center text-slate-500 p-1">You got {user?.projects.length} / 5 projects</p>
+                  </div>} cardFooter={<small className="text-gray-400">We give premium content for free</small>}/>
                 <InfoCard cardTitle="Manageless api usage" cardBody={<p>status:medium</p>} cardFooter={<p className="text-green-600">online</p>}/>
               </div>
             </div>
