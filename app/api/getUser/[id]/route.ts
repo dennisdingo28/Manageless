@@ -1,4 +1,5 @@
 import connectDb from "@/lib/connectDB";
+import { Project } from "@/models/Project";
 import { User } from "@/models/User";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,7 +13,8 @@ export async function GET(req:NextRequest,{params}:{params:{id:string}}){
         if(!id)
             throw new Error("No user id was provided. Please provide a valid id");
 
-        const user = await User.findById({_id:id});
+        const user = await User.findById({_id:id}).populate("projects","projectTitle projectPassword",Project);
+        
 
         if(!user)
             throw new Error(`Cannot find any user with id: ${id}`);

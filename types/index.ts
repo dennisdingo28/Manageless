@@ -93,3 +93,6 @@ export interface ProjectProps {
     projectTitle: string;
     projectPassword: string;
 }
+export interface ProjectCardProps{
+    projectTitle: string;
+}

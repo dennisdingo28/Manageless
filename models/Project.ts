@@ -12,4 +12,4 @@ const ProjectSchema = new Schema<ProjectProps>({
     }
 })
 
-export const Project = models.projects || model("projects",ProjectSchema);
+export const Project = models.project || model<ProjectProps>("project",ProjectSchema);

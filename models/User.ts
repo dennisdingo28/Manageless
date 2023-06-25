@@ -1,4 +1,4 @@
-import { ProjectProps, UserSchemaProps } from "@/types";
+import { UserSchemaProps } from "@/types";
 import mongoose, { Schema,model,models } from "mongoose";
 
 const UserSchema = new Schema<UserSchemaProps>({
@@ -20,8 +20,8 @@ const UserSchema = new Schema<UserSchemaProps>({
     },
     projects:[{
         type: mongoose.Types.ObjectId,
-        ref: "projects",
+        ref: "project",
     }]
 });
 
-export const User = models.users || model<UserSchemaProps>("users",UserSchema);
+export const User = models.user || model<UserSchemaProps>("user",UserSchema);

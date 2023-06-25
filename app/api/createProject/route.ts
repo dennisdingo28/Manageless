@@ -26,11 +26,12 @@ export async function POST(req:NextRequest){
             throw new Error("User api key doesn't match with the provided one.");
         
         const newProject = await Project.create({projectTitle:"test",projectPassword:"1234"});
-        const updatedUser = await User.findOneAndUpdate({email:decodedUser.email,name:decodedUser.name},{projects:[...findUser.projects,newProject._id]},{new:true,runValidators:true}).populate("projects");
-        console.log(updatedUser);
+        const updatedUser = await User.findOneAndUpdate({email:decodedUser.email,name:decodedUser.name},{$push:{projects:newProject._id}},{new:true,runValidators:true});
+        const currentUser = await User.findById({_id:updatedUser._id}).populate("projects");
+        console.log(currentUser);
 
         console.log("all ok");
-        return NextResponse.json({ok:true,updatedUser});
+        return NextResponse.json({ok:true,updatedUser:currentUser});
     }catch(err){
         console.log(err);
     }

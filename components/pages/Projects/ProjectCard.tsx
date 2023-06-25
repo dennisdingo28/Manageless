@@ -1,9 +1,10 @@
+import { ProjectCardProps } from '@/types'
 import React from 'react'
 
-const ProjectCard = () => {
+const ProjectCard = ({projectTitle}:ProjectCardProps) => {
   return (
     <div>
-      
+      {projectTitle}
     </div>
   )
 }

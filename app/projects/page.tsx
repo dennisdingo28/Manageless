@@ -8,6 +8,7 @@ import axios from "axios"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
 import { User } from "next-auth"
+import ProjectCard from "@/components/pages/Projects/ProjectCard"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -48,7 +49,7 @@ const page =  () => {
   return (
     <Auth>
          
-        <Modal isOpen={openModal} setUser={setUser} apiKey={userKey} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(session?.user?.projects.length)}`}/>
+        <Modal isOpen={openModal} setUser={setUser} apiKey={userKey} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(user?.projects.length)}`}/>
  
         <div className="bg-[#161617] min-h-[100vh] text-white">
             <div className="sm:container sm:mx-auto">
@@ -88,7 +89,9 @@ const page =  () => {
                   </div>
                  ):(
                   <div>
-                      {user?.projects.map(project=>(<p key={`${project._id}`}>{project.projectTitle}</p>))}
+                      {user?.projects.map(project=>(
+                          <ProjectCard key={`${project._id}`} projectTitle={project.projectTitle}/>
+                      ))}
                   </div>
                  )
                  } 
