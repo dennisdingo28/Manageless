@@ -1,65 +1,62 @@
-"use client"
-import { Dialog, Transition } from '@headlessui/react';
-import { Fragment, useRef } from 'react';
-import { ModalProps } from '@/types';
-import Input from './Input';
-import { useState } from 'react';
+"use client";
+
 import { useFormValidation } from '@/hooks/useFormValidation';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, useRef, useState } from 'react';
+import { ModalProps } from '@/types';
 import axios from 'axios';
+import Input from '@/components/ui/Input';
 
-const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }: ModalProps) => {
-  let completeButtonRef = useRef(null);
-  const [inputProjectName,setInputProjectName] = useState<string>("");
-  const [inputProjectPassword,setInputProjectPassword] = useState<string>("");
-  const [showPassword,setShowPassword] = useState<boolean>(false);
-  const [validInputs,setValidInputs] = useState<boolean>(false);
-  const [formMessage,setFormMessage] = useState<string>("");
 
-  function clearForm(){
-    setInputProjectName("");
-    setInputProjectPassword("");
-    setShowPassword(false);
-    setValidInputs(false);
-    setFormMessage("");
-  }
+const EditModal = ({ modalTitle,modalDescription,setUser,projectTitle,projectId,isOpen,setIsOpen }:ModalProps) => {
+    let completeButtonRef = useRef(null);
+    const [inputProjectTitle,setInputProjectTitle] = useState<string>("");
+    const [inputProjectPassword,setInputProjectPassword] = useState<string>("");
+    const [showPassword,setShowPassword] = useState<boolean>(false);
+    const [validInputs,setValidInputs] = useState<boolean>(false);
+    const [formMessage,setFormMessage] = useState<string>("");
 
-  async function handleCreateProject(){
-    const formData = {
-      name:inputProjectName,
-      password:inputProjectPassword,
+    async function handleEditProject(){
+        const formData = {
+            title:inputProjectTitle,
+            password:inputProjectPassword,
+        }
+        const {validateForm} = useFormValidation();
+        const validatedInputs = validateForm(formData);
+        function clearForm(){
+            setInputProjectTitle("");
+            setInputProjectPassword("");
+            setShowPassword(false);
+            setValidInputs(false);
+            setFormMessage("");
+          }
+        console.log(validatedInputs);
+        
+        if(validatedInputs.valid){
+            setValidInputs(true);
+            setFormMessage("Editing...");
+            const userToken = JSON.parse(localStorage.getItem('token') || "");
+            if(userToken.trim()==="" || !userToken)
+                throw new Error("Something went wrong while trying to edit your account. Please try again later.");
+            try{
+                const req = await axios.post(`/api/editProject/${projectId}`,{token:userToken,newTitle:inputProjectTitle,password:inputProjectPassword});
+                console.log(req);
+                
+                if(req.data.ok){
+                    if(setUser)
+                        setUser(req.data.updatedUser);
+                }
+            }catch(err){
+                console.log(err);
+                
+            }
+        }
+        setTimeout(()=>{  
+            clearForm();
+        },1800); 
     }
-    const {validateForm} = useFormValidation();
 
-    const validatedInputs = validateForm(formData);
-    
-    if(validatedInputs.valid){
-      setValidInputs(true);
-      setFormMessage("Creating your project...");
-      try{
-        const userToken = JSON.parse(localStorage.getItem('token') || "");
-        if(userToken.trim()==="" || !userToken)
-          throw new Error("Something went wrong while trying to access your account. Please try again later.");
-
-        const req = await axios.post(`/api/createProject`,{token:userToken,apiKey,inputProjectName,inputProjectPassword});
-        console.log("project created",req);
-        if(req.data.ok && setUser)
-          setUser(req.data.updatedUser);
-        else setFormMessage(req.data.msg);
-      }catch(err){
-        setFormMessage((err as Error).message);
-        console.log(err);
-      }
-    }else{
-      setValidInputs(false);
-      setFormMessage(validatedInputs.errors?.name || validatedInputs.errors?.password || "Something went wrong while trying to create your project. Please try again later.")
-    }
-    setTimeout(()=>{
-      
-      clearForm();
-    },1800);  
-  }
-
-  return (
+    return (
     <Transition show={isOpen} as={Fragment}>
       <Dialog
         as="div"
@@ -100,10 +97,12 @@ const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }:
               <Dialog.Description className="mt-2 mb-1 text-sm text-gray-500">
                 {modalDescription}
               </Dialog.Description>
-
+            <div className="text-center">
+                <small className='text-gray-200 text-[.90em] font-light'>Current title: {projectTitle}</small>
+            </div>
               <div className="flex flex-col gap-2">
                 <div className={`${validInputs && "bg-gray-700 rounded-sm"}`}>
-                  <Input type='text' inputValue={inputProjectName || ""} isDisabled={validInputs} inputPlaceholder='project name' setInputValue={setInputProjectName || undefined}/>
+                  <Input type='text' inputValue={inputProjectTitle || ""} isDisabled={validInputs} inputPlaceholder='new project title' setInputValue={setInputProjectTitle || undefined}/>
                 </div>
                 <div className={`flex gap-1 items-center w-full ${validInputs && "bg-gray-700 rounded-sm"}`}>
                   <div className="flex-1">
@@ -124,11 +123,11 @@ const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }:
                 <button
                   type="button"
                   className={`inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-lightBlue border border-transparent rounded-md hover:bg-darkBlue focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 ${validInputs && "bg-gray-700 pointer-events-none"}`}
-                  onClick={() => handleCreateProject()}
+                  onClick={() => handleEditProject()}
                   ref={completeButtonRef}
                   disabled={validInputs}
                 >
-                  Create My Project
+                  Save
                 </button>
                 <p className='font-thin text-lightBlue'>{formMessage}</p>
               </div>
@@ -137,7 +136,7 @@ const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }:
         </div>
       </Dialog>
     </Transition>
-  );
-};
+  )
+}
 
-export default Modal;
+export default EditModal

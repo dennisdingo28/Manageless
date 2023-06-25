@@ -16,6 +16,13 @@ function validateForm(formData:FormDataProps){
         if(empty)
             addNewError("name","Username is blank");
     }
+    if(formData.title || formData.title?.length===0){
+
+        const empty= checkEmpty(formData.title);
+        
+        if(empty)
+            addNewError("title","Title is blank");
+    }
 
     if(formData.email || formData.email?.length===0){
         const empty = checkEmpty(formData.email);

@@ -42,6 +42,7 @@ export interface FormDataProps {
     email?: string;
     description?: string;
     password?: string;
+    title?: string;
 }
 export interface ProjectProps{
     _id: mongoose.ObjectId;
@@ -79,6 +80,8 @@ export interface ModalProps {
     modalDescription: string;
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
+    projectTitle?: string;
+    projectId?: string;
     apiKey?: string;
     setUser?: Dispatch<SetStateAction<User | undefined>>;
 }
@@ -96,5 +99,6 @@ export interface ProjectProps {
 export interface ProjectCardProps{
     projectTitle: string;
     projectId: string;
+    setUser: Dispatch<SetStateAction<User | undefined>>;
     deleteProject: (id: string,setErrorMessage:Dispatch<SetStateAction<string>>)=>void;
 }

@@ -106,7 +106,7 @@ const page =  () => {
                  ):(
                   <div className="flex flex-col flex-wrap mt-6 md:flex-row">
                       {user?.projects.map(project=>(
-                          <ProjectCard key={`${project._id}`} deleteProject={deleteProject} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
+                          <ProjectCard key={`${project._id}`} setUser={setUser} deleteProject={deleteProject} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
                       ))}
                   </div>
                  )
