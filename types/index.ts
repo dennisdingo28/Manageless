@@ -95,4 +95,7 @@ export interface ProjectProps {
 }
 export interface ProjectCardProps{
     projectTitle: string;
+    projectId: string;
+    projectErrorMessage: string;
+    deleteProject: (id: string)=>void;
 }

@@ -13,7 +13,7 @@ export async function GET(req:NextRequest,{params}:{params:{id:string}}){
         if(!id)
             throw new Error("No user id was provided. Please provide a valid id");
 
-        const user = await User.findById({_id:id}).populate("projects","projectTitle projectPassword",Project);
+        const user = await User.findById({_id:id}).populate("projects","projectTitle",Project);
         
 
         if(!user)
