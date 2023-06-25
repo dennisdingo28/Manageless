@@ -36,11 +36,9 @@ export async function POST(req:NextRequest){
         const newProject = await Project.create({projectTitle:data.inputProjectName,projectPassword:data.inputProjectPassword});
         const updatedUser = await User.findOneAndUpdate({email:decodedUser.email,name:decodedUser.name},{$push:{projects:newProject._id}},{new:true,runValidators:true});
         const currentUser = await User.findById({_id:updatedUser._id}).populate("projects");
-        console.log(currentUser);
 
         return NextResponse.json({ok:true,updatedUser:currentUser});
     }catch(err){
-        console.log(err);
         return NextResponse.json({ok:false,msg:(err as Error).message});
     }
 }

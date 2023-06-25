@@ -24,16 +24,13 @@ export async function POST(req:NextRequest,{params}:{params:{id: string}}){
 
         if(!user)
             throw new Error('Cannot find and delete any projects within provided user.Please try again later.');
-        console.log(user);
 
         const updatedUser = await User.findByIdAndUpdate({_id:currentUser._id,name:currentUser.name,email:currentUser.email,apiKey:userApiKey},{projects:user.projects.filter((project: ProjectProps)=>`${project._id}`!==projectId)},{new:true,runValidators:true}).populate("projects","projectTitle",Project);
-        console.log(updatedUser);
         const deleteProject = await Project.findByIdAndDelete({_id:projectId});
         
         return NextResponse.json({ok:true,msg:"Post was successfully deleted",updatedUser});
         
     }catch(err){
-        console.log(err);
         if(err instanceof mongoose.Error.CastError){
             return NextResponse.json({ok:false,msg:'Cannot delete your project. Please try again later.'});
         }
