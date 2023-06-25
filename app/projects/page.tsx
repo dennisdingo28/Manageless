@@ -7,22 +7,26 @@ import Modal from "@/components/ui/Modal"
 import axios from "axios"
 import { useSession } from "next-auth/react"
 import { useEffect, useState } from "react"
+import { User } from "next-auth"
 
 const page =  () => {
     const {data:session,status} = useSession();
-    const [userKey,setUserKey] = useState<string>("");
     const [copied,setCopied] = useState<boolean>(false);
     const [openModal,setOpenModal] = useState<boolean>(false);
-    
+    const [userKey,setUserKey] = useState<string>("");
+    const [user,setUser] = useState<User>();
+    console.log('user change',user);
+      
 
     useEffect(()=>{
       async function getUserApiKey(){
         if(status==="authenticated"){
           const user = await axios.get(`http://localhost:3000/api/getUser/${session?.user?._id}`);
-          console.log(user);
+          console.log(user,"done");
           
           if(user.data.ok){
             setUserKey(user.data.user.apiKey);
+            setUser(user.data.user);
           }
         }
       }
@@ -32,8 +36,8 @@ const page =  () => {
     async function handleCopy(){
       const clipboardText = await navigator.clipboard.readText();
       console.log(clipboardText);
-      if(clipboardText!==`${userKey}`){
-        await navigator.clipboard.writeText(`${userKey}`);
+      if(clipboardText!==`${user?.apiKey}`){
+        await navigator.clipboard.writeText(`${user?.apiKey}`);
       }
       setCopied(true);
       setTimeout(()=>{
@@ -44,7 +48,7 @@ const page =  () => {
   return (
     <Auth>
          
-        <Modal isOpen={openModal} apiKey={userKey} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(session?.user?.projects.length)}`}/>
+        <Modal isOpen={openModal} setUser={setUser} apiKey={userKey} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(session?.user?.projects.length)}`}/>
  
         <div className="bg-[#161617] min-h-[100vh] text-white">
             <div className="sm:container sm:mx-auto">
@@ -70,21 +74,24 @@ const page =  () => {
               </div>
             </div>
             <div className="container mx-auto mt-10">
-              <div className={`${session?.user?.projects.length!==0 && "flex items-center justify-between"}`}>
+              <div className={`${user?.projects.length!==0 && "flex items-center justify-between"}`}>
                 <h3 className="font-bold text-left text-[1.65em] tracking-wide">Projects</h3>
-                {session?.user?.projects.length!==0 && (
-                    <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="bg-darktBlue px-2 py-1 font-medium whitespace-nowrap cursor-pointer hover:text-darkBlue hover:-translate-y-1 duration-100"/>
+                {user?.projects.length!==0 && (
+                    <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="border border-darkBlue p-2 hover:border-lightBlue duration-100 hover:-translate-y-1"/>
                 )}
               </div>
               <section>
-                { session?.user?.projects.length===0 ? ( 
+                { user?.projects.length===0 ? ( 
                   <div className="flex items-center gap-1">
                     <p className="font-thin whitespace-nowrap">No current projects.</p>
                     <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="bg-darktBlue px-2 py-1 font-medium whitespace-nowrap cursor-pointer hover:text-darkBlue hover:-translate-y-1 duration-100"/>
                   </div>
                  ):(
-                <p>your projects</p>
-                 )} 
+                  <div>
+                      {user?.projects.map(project=>(<p key={`${project._id}`}>{project.projectTitle}</p>))}
+                  </div>
+                 )
+                 } 
               </section>
             </div>
         </div>

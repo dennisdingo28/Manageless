@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Session } from "next-auth";
+import { User } from "next-auth";
 import { Dispatch, ReactNode, SetStateAction } from "react";
 
 export interface CustomButtonProps {
@@ -80,6 +80,7 @@ export interface ModalProps {
     isOpen: boolean;
     setIsOpen: Dispatch<SetStateAction<boolean>>;
     apiKey?: string;
+    setUser?: Dispatch<SetStateAction<User | undefined>>;
 }
 export interface InputProps {
     inputValue: string;

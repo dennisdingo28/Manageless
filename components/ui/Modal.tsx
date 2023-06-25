@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { useFormValidation } from '@/hooks/useFormValidation';
 import axios from 'axios';
 
-const Modal = ({ modalTitle,modalDescription,apiKey,isOpen, setIsOpen }: ModalProps) => {
+const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }: ModalProps) => {
   let completeButtonRef = useRef(null);
   const [inputProjectName,setInputProjectName] = useState<string>("");
   const [inputProjectPassword,setInputProjectPassword] = useState<string>("");
@@ -31,7 +31,6 @@ const Modal = ({ modalTitle,modalDescription,apiKey,isOpen, setIsOpen }: ModalPr
     const {validateForm} = useFormValidation();
 
     const validatedInputs = validateForm(formData);
-    console.log(validatedInputs);
     
     if(validatedInputs.valid){
       setValidInputs(true);
@@ -42,9 +41,10 @@ const Modal = ({ modalTitle,modalDescription,apiKey,isOpen, setIsOpen }: ModalPr
           throw new Error("Something went wrong while trying to access you account. Please try again later.");
 
         const req = await axios.post(`/api/createProject`,{token:userToken,apiKey});
-        console.log(req);
-        if(req.data.ok)
-          window.location.reload();
+        console.log("project created",req);
+        if(req.data.ok && setUser)
+          setUser(req.data.updatedUser);
+
       }catch(err){
         console.log(err);
       }
