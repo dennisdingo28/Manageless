@@ -12,9 +12,12 @@ export async function POST(req:NextRequest){
             throw new Error("Payload was empty. Please try again later.");
         
         const userApiKey = data.apiKey;
+        const token = data.token;
+        if(!token || token.trim()===''){
+            throw new Error('No token was provided. Please try again later.');
+        }
         if(!userApiKey)
             throw new Error("No api key was provided. Please try again later.");
-
         const decodedUser = await decodeToken(data.token) as JwtPayload;
         if(!decodedUser || Object.keys(decodedUser).length===0)
             throw new Error("Cannot decode the user. Please try again later.");
@@ -34,5 +37,6 @@ export async function POST(req:NextRequest){
         return NextResponse.json({ok:true,updatedUser:currentUser});
     }catch(err){
         console.log(err);
+        return NextResponse.json({ok:false,msg:(err as Error).message});
     }
 }

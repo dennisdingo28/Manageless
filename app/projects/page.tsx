@@ -6,7 +6,7 @@ import CustomButton from "@/components/ui/CustomButton"
 import Modal from "@/components/ui/Modal"
 import axios from "axios"
 import { useSession } from "next-auth/react"
-import { useEffect, useState } from "react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { User } from "next-auth"
 import ProjectCard from "@/components/pages/Projects/ProjectCard"
 import mongoose from "mongoose"
@@ -17,7 +17,6 @@ const page =  () => {
     const [openModal,setOpenModal] = useState<boolean>(false);
     const [userKey,setUserKey] = useState<string>("");
     const [user,setUser] = useState<User>();
-    const [projectErrorMessage,setProjectErrorMessage] = useState<string>("");
     console.log('user change',user);
     
 
@@ -48,24 +47,18 @@ const page =  () => {
       },2000);
     }
 
-    async function deleteProject(id: string){
+    async function deleteProject(id: string,setErrorMessage: Dispatch<SetStateAction<string>>){
       try{
-        setProjectErrorMessage("Loading...");
         if(!id || !mongoose.Types.ObjectId.isValid(id))
           throw new Error(`ID ${id} is not a valid id. Please try again later.`);
         const req = await axios.post(`http://localhost:3000/api/deleteProject/${id}`,{apiKey:userKey,user});
-        console.log('delete',id);
         if(req.data.ok){
           return setUser(req.data.updatedUser);
         }
-        setProjectErrorMessage(req.data.msg);
+        setErrorMessage(req.data.msg);
       }catch(err){
         console.log(err);
-        
-      }finally{
-        setTimeout(()=>{
-          setProjectErrorMessage("");
-        },1300);
+        setErrorMessage((err as Error).message);
       }
     }
 
@@ -113,7 +106,7 @@ const page =  () => {
                  ):(
                   <div className="flex flex-col flex-wrap mt-6 md:flex-row">
                       {user?.projects.map(project=>(
-                          <ProjectCard key={`${project._id}`} projectErrorMessage={projectErrorMessage} deleteProject={deleteProject} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
+                          <ProjectCard key={`${project._id}`} deleteProject={deleteProject} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
                       ))}
                   </div>
                  )

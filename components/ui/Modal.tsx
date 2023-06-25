@@ -44,7 +44,7 @@ const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }:
         console.log("project created",req);
         if(req.data.ok && setUser)
           setUser(req.data.updatedUser);
-
+        else setFormMessage(req.data.msg);
       }catch(err){
         console.log(err);
       }
@@ -53,6 +53,7 @@ const Modal = ({ modalTitle,modalDescription,setUser,apiKey,isOpen, setIsOpen }:
       setFormMessage(validatedInputs.errors?.name || validatedInputs.errors?.password || "Something went wrong while trying to create your project. Please try again later.")
     }
     setTimeout(()=>{
+      
       clearForm();
     },1800);  
   }
