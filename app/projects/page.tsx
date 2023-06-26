@@ -10,6 +10,8 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 import { User } from "next-auth"
 import ProjectCard from "@/components/pages/Projects/ProjectCard"
 import mongoose from "mongoose"
+import { ProjectContentProps, ProjectProps } from "@/types"
+import { useFormValidation } from "@/hooks/useFormValidation"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -17,7 +19,64 @@ const page =  () => {
     const [openModal,setOpenModal] = useState<boolean>(false);
     const [userKey,setUserKey] = useState<string>("");
     const [user,setUser] = useState<User>();
-    
+    const [selectedProjectId,setSelectedProjectId] = useState<string>("");
+    const [selectedProject,setSelectedProject] = useState<ProjectProps>();
+    const [selectedProjectFormMessage,setSelectedProjectFormMessage] = useState<string>("");
+    const [selectedProjectContent,setSelectedProjectContent] = useState<Array<ProjectContentProps>>();
+    const [selectedProjectChildrenText,setSelectedProjectChildrenText] = useState<string>("");
+    const [selectedProjectParentText,setSelectedProjectParentText] = useState<string>("");
+    const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
+
+    function clearInputs(){
+      setSelectedProjectChildrenText("");
+      setSelectedProjectParentText("");
+      setSelectedProjectChildrenValid(true);
+    }
+    async function handleCreateContentObject(){
+      try{
+        console.log('create object contatet');
+        const formData = {
+          childrenText:selectedProjectChildrenText,
+        }
+        const {validateForm} = useFormValidation();
+        const validatedInputs = validateForm(formData);
+
+        if(!validatedInputs.valid){
+          setSelectedProjectChildrenValid(false);
+        }else{
+
+        }
+      }catch(err){
+
+      }finally{
+        setTimeout(()=>{
+          clearInputs();
+        },1700);
+      }
+    }
+
+    useEffect(()=>{  
+      async function retrieveProject(id: string){
+        try{
+          setSelectedProjectFormMessage("Loading...");
+
+          const req = await axios.get(`http://localhost:3000/api/getProject/${id}`);
+          setSelectedProjectFormMessage("");
+          if(req.data.ok){
+            setSelectedProject(req.data.project)
+          }
+          console.log(req);
+          
+        }catch(err){
+          console.log(err);
+          
+        }
+      }
+      if(selectedProjectId!==''){
+        retrieveProject(selectedProjectId);
+
+      }
+    },[selectedProjectId]);
 
     useEffect(()=>{
       async function getUserApiKey(){
@@ -64,7 +123,7 @@ const page =  () => {
          
         <Modal isOpen={openModal} setUser={setUser} apiKey={userKey} setIsOpen={setOpenModal} modalTitle="Create New Project" modalDescription={`Remaining projects: ${5-Number(user?.projects.length)}`}/>
  
-        <div className="bg-[#161617] min-h-[100vh] text-white">
+        <div className="bg-[#161617] min-h-[100vh] pb-10 text-white">
             <div className="sm:container sm:mx-auto">
               <div className="dashboardHeader flex flex-col md:flex-row pt-6 gap-4">
                 <InfoCard cardTitle="API Key" cardBody={
@@ -106,11 +165,49 @@ const page =  () => {
                  ):(
                   <div className="flex flex-col flex-wrap gap-4 mt-6 md:flex-row">
                       {user?.projects.map(project=>(
-                          <ProjectCard key={`${project._id}`} setUser={setUser} deleteProject={deleteProject} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
+                          <ProjectCard key={`${project._id}`} setUser={setUser} deleteProject={deleteProject} setSelectedProjectId={setSelectedProjectId} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
                       ))}
                   </div>
                  )
                  } 
+              </section>
+              <section className="mt-20">
+                <div>
+                  <h3 className="font-bold text-center sm:text-left text-[1.65em] tracking-wide">Selected Project</h3>
+                  {selectedProjectId==="" && <p className="font-thin whitespace-nowrap mt-3">No selected project.</p>}
+                </div>
+                {selectedProjectId!=="" && (
+                  <div>
+                    {selectedProjectFormMessage!=='' ? (
+                      <p>{selectedProjectFormMessage}</p>
+                    ):(
+                      <div className="bg-darkBlack p-2">
+                        <h1 className="text-center font-light text-[1.2em]">{selectedProject?.projectTitle}</h1>
+                        <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-evenly">
+                          <div className="flex items-center">
+                            <input value={selectedProjectParentText} onChange={e=>setSelectedProjectParentText(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create parent object"/>
+                            <CustomButton classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
+                          </div>
+                          <div className="flex items-center">
+                            <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create child object"/>
+                            <CustomButton handleClick={handleCreateContentObject} classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
+                            {!selectedProjectChildrenValid && (
+                              <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>
+                            )}
+                          </div>
+                        </div>
+                        <div className="mt-3">
+                          <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
+                          <div className="bg-neutral-800 w-full p-3">
+                            {`{
+                            
+                            }`}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </section>
             </div>
         </div>

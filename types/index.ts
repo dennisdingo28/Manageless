@@ -43,6 +43,8 @@ export interface FormDataProps {
     description?: string;
     password?: string;
     title?: string;
+    childrenText?: string;
+    parentText?: string;
 }
 export interface ProjectProps{
     _id: mongoose.ObjectId;
@@ -94,11 +96,14 @@ export interface InputProps {
 }
 export interface ProjectProps {
     projectTitle: string;
-    projectPassword: string;
 }
 export interface ProjectCardProps{
     projectTitle: string;
     projectId: string;
     setUser: Dispatch<SetStateAction<User | undefined>>;
     deleteProject: (id: string,setErrorMessage:Dispatch<SetStateAction<string>>)=>void;
+    setSelectedProjectId: Dispatch<SetStateAction<string>>;
+}
+export interface ProjectContentProps {
+    [key: string]: string;
 }

@@ -23,7 +23,20 @@ function validateForm(formData:FormDataProps){
         if(empty)
             addNewError("title","Title is blank");
     }
+    if(formData.childrenText || formData.childrenText?.length===0){
 
+        const empty= checkEmpty(formData.childrenText);
+        
+        if(empty)
+            addNewError("childrenText","Children text is blank");
+    }
+    if(formData.parentText || formData.parentText?.length===0){
+
+        const empty= checkEmpty(formData.parentText);
+        
+        if(empty)
+            addNewError("parentText","Parent text is blank");
+    }
     if(formData.email || formData.email?.length===0){
         const empty = checkEmpty(formData.email);
 
