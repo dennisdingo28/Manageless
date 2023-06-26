@@ -30,6 +30,13 @@ function validateForm(formData:FormDataProps){
         if(empty)
             addNewError("childrenText","Children text is blank");
     }
+    if(formData.childrenKey || formData.childrenKey?.length===0){
+
+        const empty= checkEmpty(formData.childrenKey);
+        
+        if(empty)
+            addNewError("childrenKey","Children key is blank");
+    }
     if(formData.parentText || formData.parentText?.length===0){
 
         const empty= checkEmpty(formData.parentText);

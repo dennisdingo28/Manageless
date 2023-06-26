@@ -44,6 +44,7 @@ export interface FormDataProps {
     password?: string;
     title?: string;
     childrenText?: string;
+    childrenKey?: string;
     parentText?: string;
 }
 export interface ProjectProps{

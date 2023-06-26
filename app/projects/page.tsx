@@ -23,6 +23,8 @@ const page =  () => {
     const [selectedProject,setSelectedProject] = useState<ProjectProps>();
     const [selectedProjectFormMessage,setSelectedProjectFormMessage] = useState<string>("");
     const [selectedProjectContent,setSelectedProjectContent] = useState<Array<ProjectContentProps>>();
+    const [selectedProjectChildrenKey,setSelectedProjectChildrenKey] = useState<string>("");
+
     const [selectedProjectChildrenText,setSelectedProjectChildrenText] = useState<string>("");
     const [selectedProjectParentText,setSelectedProjectParentText] = useState<string>("");
     const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
@@ -37,10 +39,12 @@ const page =  () => {
         console.log('create object contatet');
         const formData = {
           childrenText:selectedProjectChildrenText,
+          childrenKey:selectedProjectChildrenKey,
         }
         const {validateForm} = useFormValidation();
         const validatedInputs = validateForm(formData);
-
+        console.log(validatedInputs);
+        
         if(!validatedInputs.valid){
           setSelectedProjectChildrenValid(false);
         }else{
@@ -189,7 +193,11 @@ const page =  () => {
                             <CustomButton classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
                           </div>
                           <div className="flex items-center">
-                            <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create child object"/>
+                            <div className="flex items-center">
+                              <input value={selectedProjectChildrenKey} onChange={(e)=>setSelectedProjectChildrenKey(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create child object key"/>
+                              <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900  p-1 text-gray-400 placeholder:text-gray-400 max-w-[100px] border-l" placeholder="value"/>
+                            </div>
+                            
                             <CustomButton handleClick={handleCreateContentObject} classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
                             {!selectedProjectChildrenValid && (
                               <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>
