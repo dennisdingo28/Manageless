@@ -19,22 +19,25 @@ const page =  () => {
     const [openModal,setOpenModal] = useState<boolean>(false);
     const [userKey,setUserKey] = useState<string>("");
     const [user,setUser] = useState<User>();
+    const [createContent,setCreateContent] = useState<boolean>(false);
+    const [validSelected,setValidSelected] = useState<boolean>(false);
     const [selectedProjectId,setSelectedProjectId] = useState<string>("");
     const [selectedProject,setSelectedProject] = useState<ProjectProps>();
     const [selectedProjectFormMessage,setSelectedProjectFormMessage] = useState<string>("");
     const [selectedProjectContent,setSelectedProjectContent] = useState<Array<ProjectContentProps> | undefined>([]);
     const [selectedProjectChildrenKey,setSelectedProjectChildrenKey] = useState<string>("");
-
     const [selectedProjectChildrenText,setSelectedProjectChildrenText] = useState<string>("");
-    const [selectedProjectParentText,setSelectedProjectParentText] = useState<string>("");
     const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
-    console.log('proejcte content',selectedProjectContent);
+    const [createContentMessage,setCreateContentMessage] = useState<string>("")
     
     function clearInputs(){
       setSelectedProjectChildrenText("");
       setSelectedProjectChildrenKey("");
-      setSelectedProjectParentText("");
       setSelectedProjectChildrenValid(true);
+      setCreateContent(false);
+      setSelectedProjectFormMessage("");
+      setValidSelected(false);
+      setCreateContentMessage("");
     }
     useEffect(()=>{
       async function handleCreateContentObject(){
@@ -52,21 +55,24 @@ const page =  () => {
           }else{
             const req = await axios.post(`http://localhost:3000/api/addProjectContent/${selectedProjectId}`,{
               apiKey:userKey,
-              token:localStorage.getItem('token') || "",
+              token:JSON.parse(localStorage.getItem('token') || ""),
               content:selectedProjectContent,
             });
+            if(!req.data.ok)
+              setCreateContentMessage(req.data.msg);
           }
         }catch(err){
           console.log(err);
-          
+          setCreateContentMessage((err as Error).message);
         }finally{
           setTimeout(()=>{
             clearInputs();
           },1700);
         }
       }
-      handleCreateContentObject();
-    },[selectedProjectContent]);
+    if(createContent)
+        handleCreateContentObject();
+    },[createContent]);
     
 
     useEffect(()=>{  
@@ -77,18 +83,47 @@ const page =  () => {
           const req = await axios.get(`http://localhost:3000/api/getProject/${id}`);
           setSelectedProjectFormMessage("");
           if(req.data.ok){
-            setSelectedProject(req.data.project)
+            setValidSelected(true);
+            setSelectedProject(req.data.project);
+            Object.keys(req.data.project.projectContent).map(obj=>{
+              const projectContentKey = obj;
+              const projectContentValue = req.data.project.projectContent[projectContentKey];
+              setSelectedProjectContent(prev=>{
+                if(prev)
+                  return [
+                    ...prev,
+                    {[projectContentKey]:projectContentValue},
+                  ]
+                else return prev;
+              })
+            })
+          }else{
+            setValidSelected(false);
+            setSelectedProjectFormMessage(req.data.msg);
+            setTimeout(()=>{
+              setSelectedProjectId("");
+
+            },1700);
           }
           console.log(req);
           
         }catch(err){
-          console.log(err);
+          setValidSelected(false);
+          setSelectedProjectFormMessage((err as Error).message);
+          setTimeout(()=>{
+            setSelectedProjectId("");
+
+          },1700);
           
+        }finally{
+          setTimeout(()=>{
+            clearInputs();
+          },1700);
         }
       }
       if(selectedProjectId!==''){
         retrieveProject(selectedProjectId);
-
+        setSelectedProjectContent([]);  
       }
     },[selectedProjectId]);
 
@@ -192,32 +227,34 @@ const page =  () => {
                 </div>
                 {selectedProjectId!=="" && (
                   <div>
-                    {selectedProjectFormMessage!=='' ? (
+                    {selectedProjectFormMessage!=='' && !validSelected ? (
                       <p>{selectedProjectFormMessage}</p>
                     ):(
                       <div className="bg-darkBlack p-2">
-                        <h1 className="text-center font-light text-[1.2em]">{selectedProject?.projectTitle}</h1>
+                        <div className="flex items-center justify-center gap-3">
+                          <h1 className="text-center font-light text-[1.2em]">{selectedProject?.projectTitle}</h1>
+                          <p>{createContentMessage}</p>
+                        </div>
                         <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-evenly">
-                          <div className="flex items-center">
-                            <input value={selectedProjectParentText} onChange={e=>setSelectedProjectParentText(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create parent object"/>
-                            <CustomButton classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
-                          </div>
+                          
                           <div className="flex items-center">
                             <div className="flex items-center">
                               <input value={selectedProjectChildrenKey} onChange={(e)=>setSelectedProjectChildrenKey(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create child object key"/>
-                              <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900  p-1 text-gray-400 placeholder:text-gray-400 max-w-[100px] border-l" placeholder="value"/>
+                              <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900 p-1 text-gray-400 placeholder:text-gray-400 border-l" placeholder="value"/>
                             </div>
                             
                             <CustomButton handleClick={()=>{
+                              setCreateContent(true);
                               setSelectedProjectContent(prev=>{
                                 if(prev){
                                   const key = selectedProjectChildrenKey;
                                   const value = selectedProjectChildrenText;
-                                  
-                                  return [
-                                    ...prev,
-                                    {[key]:value},
-                                  ]
+                                  if(value.trim()!=='')
+                                    return [
+                                      ...prev,
+                                      {[key]:value},
+                                    ]
+                                  return prev;
                                 }
                                   
                               });

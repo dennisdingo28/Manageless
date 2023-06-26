@@ -97,6 +97,8 @@ export interface InputProps {
 }
 export interface ProjectProps {
     projectTitle: string;
+    projectPassword: string;
+    projectContent: any;
 }
 export interface ProjectCardProps{
     projectTitle: string;
