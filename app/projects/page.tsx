@@ -228,19 +228,21 @@ const page =  () => {
                           </div>
                         </div>
                         <div className="mt-3">
-                          <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
-                          <div className="bg-neutral-800 w-full p-3">
-                            {`{
-                              ${selectedProjectContent && (
-                                selectedProjectContent.map((content,index)=>{
-                                    console.log(content,Object.keys(content));
-                                    const key = Object.keys(content)[0];
-                                    return `"${key}":"${content[key]}"`
-                                    
-                                })
-                              )}
-                            }`}
-                          </div>
+                        <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
+                        <div className="bg-neutral-800 w-full p-3">
+                          {selectedProjectContent && (
+                            selectedProjectContent.map((content, index) => {
+                              const key = Object.keys(content)[0];
+                              const value = content[key];
+                              return (
+                                <p key={index}>
+                                  "{key}": "{value}"
+                                </p>
+                              );
+                            })
+                          )}
+                        </div>
+
                         </div>
                       </div>
                     )}
