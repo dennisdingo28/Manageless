@@ -22,42 +22,52 @@ const page =  () => {
     const [selectedProjectId,setSelectedProjectId] = useState<string>("");
     const [selectedProject,setSelectedProject] = useState<ProjectProps>();
     const [selectedProjectFormMessage,setSelectedProjectFormMessage] = useState<string>("");
-    const [selectedProjectContent,setSelectedProjectContent] = useState<Array<ProjectContentProps>>();
+    const [selectedProjectContent,setSelectedProjectContent] = useState<Array<ProjectContentProps> | undefined>([]);
     const [selectedProjectChildrenKey,setSelectedProjectChildrenKey] = useState<string>("");
 
     const [selectedProjectChildrenText,setSelectedProjectChildrenText] = useState<string>("");
     const [selectedProjectParentText,setSelectedProjectParentText] = useState<string>("");
     const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
-
+    console.log('proejcte content',selectedProjectContent);
+    
     function clearInputs(){
       setSelectedProjectChildrenText("");
+      setSelectedProjectChildrenKey("");
       setSelectedProjectParentText("");
       setSelectedProjectChildrenValid(true);
     }
-    async function handleCreateContentObject(){
-      try{
-        console.log('create object contatet');
-        const formData = {
-          childrenText:selectedProjectChildrenText,
-          childrenKey:selectedProjectChildrenKey,
+    useEffect(()=>{
+      async function handleCreateContentObject(){
+        try{
+          const formData = {
+            childrenText:selectedProjectChildrenText,
+            childrenKey:selectedProjectChildrenKey,
+          }
+          const {validateForm} = useFormValidation();
+          const validatedInputs = validateForm(formData);
+          console.log(validatedInputs);
+          
+          if(!validatedInputs.valid){
+            setSelectedProjectChildrenValid(false);
+          }else{
+            const req = await axios.post(`http://localhost:3000/api/addProjectContent/${selectedProjectId}`,{
+              apiKey:userKey,
+              token:localStorage.getItem('token') || "",
+              content:selectedProjectContent,
+            });
+          }
+        }catch(err){
+          console.log(err);
+          
+        }finally{
+          setTimeout(()=>{
+            clearInputs();
+          },1700);
         }
-        const {validateForm} = useFormValidation();
-        const validatedInputs = validateForm(formData);
-        console.log(validatedInputs);
-        
-        if(!validatedInputs.valid){
-          setSelectedProjectChildrenValid(false);
-        }else{
-
-        }
-      }catch(err){
-
-      }finally{
-        setTimeout(()=>{
-          clearInputs();
-        },1700);
       }
-    }
+      handleCreateContentObject();
+    },[selectedProjectContent]);
+    
 
     useEffect(()=>{  
       async function retrieveProject(id: string){
@@ -198,7 +208,20 @@ const page =  () => {
                               <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900  p-1 text-gray-400 placeholder:text-gray-400 max-w-[100px] border-l" placeholder="value"/>
                             </div>
                             
-                            <CustomButton handleClick={handleCreateContentObject} classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
+                            <CustomButton handleClick={()=>{
+                              setSelectedProjectContent(prev=>{
+                                if(prev){
+                                  const key = selectedProjectChildrenKey;
+                                  const value = selectedProjectChildrenText;
+                                  
+                                  return [
+                                    ...prev,
+                                    {[key]:value},
+                                  ]
+                                }
+                                  
+                              });
+                            }} classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
                             {!selectedProjectChildrenValid && (
                               <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>
                             )}
@@ -208,7 +231,14 @@ const page =  () => {
                           <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
                           <div className="bg-neutral-800 w-full p-3">
                             {`{
-                            
+                              ${selectedProjectContent && (
+                                selectedProjectContent.map((content,index)=>{
+                                    console.log(content,Object.keys(content));
+                                    const key = Object.keys(content)[0];
+                                    return `"${key}":"${content[key]}"`
+                                    
+                                })
+                              )}
                             }`}
                           </div>
                         </div>
