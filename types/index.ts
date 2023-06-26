@@ -110,3 +110,9 @@ export interface ProjectCardProps{
 export interface ProjectContentProps {
     [key: string]: string;
 }
+export interface JsonTextProps {
+    keyText: string;
+    value: string;
+    index?: number;
+    handleJsonClick?: (obj: ProjectContentProps)=>void;
+}

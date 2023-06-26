@@ -12,6 +12,7 @@ import ProjectCard from "@/components/pages/Projects/ProjectCard"
 import mongoose from "mongoose"
 import { ProjectContentProps, ProjectProps } from "@/types"
 import { useFormValidation } from "@/hooks/useFormValidation"
+import JsonText from "@/components/ui/JsonText"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -167,6 +168,17 @@ const page =  () => {
       }
     }
 
+    async function deleteContent(obj:ProjectContentProps){
+      try{
+        if(!obj || Object.keys(obj).length===0)
+          throw new Error('No object was provided. Please try again later.');
+        const req = await axios.post(`http://localhost:3000/api/deleteProjectContent`,{apiKey:userKey,user,object:obj});
+      }catch(err){
+        console.log(err);
+        
+      }
+    }
+
   return (
     <Auth>
          
@@ -237,10 +249,10 @@ const page =  () => {
                         </div>
                         <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-evenly">
                           
-                          <div className="flex items-center">
-                            <div className="flex items-center">
-                              <input value={selectedProjectChildrenKey} onChange={(e)=>setSelectedProjectChildrenKey(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400" placeholder="create child object key"/>
-                              <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900 p-1 text-gray-400 placeholder:text-gray-400 border-l" placeholder="value"/>
+                          <div className="flex flex-col sm:flex-row items-center justify-center">
+                            <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row items-center w-[100%] sm:w-fit">
+                              <input value={selectedProjectChildrenKey} onChange={(e)=>setSelectedProjectChildrenKey(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400 max-w-[100%] w-[100%]" placeholder="create child object key"/>
+                              <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900 p-1 text-gray-400 placeholder:text-gray-400 sm:border-l max-w-[100%] w-[100%]" placeholder="value"/>
                             </div>
                             
                             <CustomButton handleClick={()=>{
@@ -258,23 +270,26 @@ const page =  () => {
                                 }
                                   
                               });
-                            }} classes="bg-neutral-700 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75" text="Add"/>
+                            }} classes="bg-neutral-700 mt-3 sm:mt-0 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75 w-[100%] max-w-[100%] sm:w-fit" text="Add"/>
                             {!selectedProjectChildrenValid && (
                               <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>
                             )}
                           </div>
                         </div>
                         <div className="mt-3">
-                        <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
+                          <div className="">
+                            <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
+
+                          </div>
                         <div className="bg-neutral-800 w-full p-3">
                           {selectedProjectContent && (
                             selectedProjectContent.map((content, index) => {
                               const key = Object.keys(content)[0];
+                              console.log("key",key,String(key));
+                              
                               const value = content[key];
                               return (
-                                <p key={index}>
-                                  "{key}": "{value}"
-                                </p>
+                                <JsonText key={index} keyText={key} value={value} handleJsonClick={deleteContent}/>
                               );
                             })
                           )}

@@ -8,7 +8,6 @@ import mongoose from "mongoose";
 export async function POST(req:NextRequest){
     try{
         const data = await req.json();
-        console.log(data);
         
         if(!data || Object.keys(data).length===0)
             throw new Error("Payload was empty. Please try again later.");
