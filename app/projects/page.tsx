@@ -13,6 +13,7 @@ import mongoose from "mongoose"
 import { ProjectContentProps, ProjectProps } from "@/types"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import JsonText from "@/components/ui/JsonText"
+import Tabs from "@/components/Tabs"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -251,7 +252,7 @@ const page =  () => {
                       <div className="bg-darkBlack p-2">
                         <div className="flex items-center justify-center gap-3">
                           <h1 className="text-center font-light text-[1.2em]">{selectedProject?.projectTitle}</h1>
-                          <p>{createContentMessage}</p>
+                          <small className="font-bold">{createContentMessage}</small>
                         </div>
                         <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-evenly">
                           
@@ -263,15 +264,33 @@ const page =  () => {
                             
                             <CustomButton handleClick={()=>{
                               setCreateContent(true);
+                              const key = selectedProjectChildrenKey;
+                              const value = selectedProjectChildrenText;
+
+                              const propExist = selectedProjectContent?.filter(project=>{
+                                const objKey = Object.keys(project)[0];
+                                return objKey===key;
+                              })
+
+                              if(propExist?.length!==0){
+                                setCreateContentMessage(`Property ${key} already exists.`);
+                                setCreateContent(false);
+                                setTimeout(()=>{
+                                  clearInputs();
+                                },1700);
+                                return;
+                              }
                               setSelectedProjectContent(prev=>{
                                 if(prev){
-                                  const key = selectedProjectChildrenKey;
-                                  const value = selectedProjectChildrenText;
-                                  if(value.trim()!=='')
+                                 
+                                  if(value.trim()!==''){
+
                                     return [
                                       ...prev,
                                       {[key]:value},
                                     ]
+                                  }
+                                    
                                   return prev;
                                 }
                                   
@@ -283,24 +302,27 @@ const page =  () => {
                           </div>
                         </div>
                         <div className="mt-3">
-                          <div className="">
+                          <div className="flex flex-col sm:flex-row  items-center justify-between mb-2">
                             <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
-
+                            <Tabs/>    
                           </div>
-                        <div className="bg-neutral-800 w-full p-3">
-                          {selectedProjectContent && (
-                            selectedProjectContent.map((content, index) => {
-                              const key = Object.keys(content)[0];
-                              console.log("key",key,String(key));
-                              
-                              const value = content[key];
-                              return (
-                                <JsonText key={index} keyText={key} value={value} handleJsonClick={deleteContent}/>
-                              );
-                            })
-                          )}
-                        </div>
-
+                          <div className="bg-neutral-800 w-full p-3">
+                            <p>{`{`}</p>
+                            {selectedProjectContent && (
+                              selectedProjectContent.map((content, index) => {
+                                const key = Object.keys(content)[0];
+                                
+                                const value = content[key];
+                                return (
+                                  <div className="ml-3">
+                                    <JsonText key={index} keyText={key} value={value} handleJsonClick={deleteContent}/>
+                                  </div>
+                                );
+                              })
+                            )}
+                            <p>{`}`}</p>
+                          </div>
+                         
                         </div>
                       </div>
                     )}
