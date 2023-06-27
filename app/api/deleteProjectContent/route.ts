@@ -1,7 +1,8 @@
 import { Project } from "@/models/Project";
 import { User } from "@/models/User";
 import { ProjectContentProps, ProjectProps } from "@/types";
-import { NextRequest } from "next/server";
+import mongoose from "mongoose";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req:NextRequest){
     try{
@@ -30,25 +31,27 @@ export async function POST(req:NextRequest){
                     userContainsProject=true;
                     projectObj =project; 
                 }
-                    
             })
-            
         })
-        
         if(userContainsProject){
-            console.log(projectObj);
-            const updatedProjectContent: ProjectContentProps = {
-
-            }
+            const updatedProjectContent: ProjectContentProps = {};
              Object.keys(projectObj.projectContent).forEach(projectKey=>{
                 const value = projectObj.projectContent[projectKey];
                 if(projectKey!==Object.keys(objToDelete)[0] && value!==objToDelete[Object.keys(objToDelete)[0]])
                     updatedProjectContent[projectKey]=value;
             })
             
-            const updatedProject = await Project.findOneAndUpdate({_id:projectObj._id,projectTitle:projectObj.projectTitle},{projectContent:updatedProjectContent});
+            const updatedProject = await Project.findOneAndUpdate({_id:projectObj._id,projectTitle:projectObj.projectTitle},{projectContent:updatedProjectContent},{new:true,runValidators:true}).select('-projectPassword');
+            if(!updatedProject)
+                throw new Error('Cannot find any project that met the request credintials. Please try again later.');
+            const updatedUser = await User.findOne({_id:data.user._id,email:data.user.email,name:data.user.name,apiKey:apiKey}).populate('projects','projectTitle projectContent',Project);
+            return NextResponse.json({ok:true,updatedProject,updatedUser})
+        }else{
+            throw new Error('Cannot find the user with provided credintials that met the requirements. Please try again later.')
         }
     }catch(err){
-        console.log(err);
+        if(err instanceof mongoose.Error.CastError)
+            return NextResponse.json({ok:false,msg:"Something went wrong while trying to access you account. Please try again later."});
+        return NextResponse.json({ok:false,msg:(err as Error).message});
     }
 }
