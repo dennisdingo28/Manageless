@@ -2,15 +2,20 @@ import { Dispatch, SetStateAction } from "react";
 
 export default function clearInputs(setSelectedProjectProps:any,setCreateContent: Dispatch<SetStateAction<boolean>>,setCreateContentMessage:Dispatch<SetStateAction<string>>){
     setSelectedProjectProps({
-        validSelected: false,
-        selectedProjectId: "",
-        selectedProject:{},
+        selectedProjectChildrenKey:"",
+        selectedProjectChildrenValid:true,
         selectedProjectFormMessage:"",
-        selectedProjectContent: [],
-        selectedProjectChildrenKey: "",
-        selectedProjectChildrenText: "",
-        selectedProjectChildrenValid: false,
+        validSelected:false,
       });
     setCreateContent(false);
     setCreateContentMessage("");
 }
+/*
+setSelectedProjectChildrenText("");
+      setSelectedProjectChildrenKey("");
+      setSelectedProjectChildrenValid(true);
+      setCreateContent(false);
+      setSelectedProjectFormMessage("");
+      setValidSelected(false);
+      setCreateContentMessage("");
+*/

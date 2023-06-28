@@ -87,7 +87,7 @@ const page =  () => {
           setSelectedProjectProps(prev=>{
             return {
               ...prev,
-              selectedProjectFormMessage:"Loading...",
+              selectedProjectFormMessage:"",
             }
           });
           
