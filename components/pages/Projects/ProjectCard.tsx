@@ -7,12 +7,17 @@ import { useState } from 'react';
 import EditModal from './EditModal';
 
 
-const ProjectCard = ({projectTitle,user,userKey,setUser,projectId,deleteProject,setSelectedProjectId}:ProjectCardProps) => {
+const ProjectCard = ({projectTitle,user,userKey,setUser,projectId,deleteProject,setSelectedProjectProps}:ProjectCardProps) => {
   const [projectErrorMessage,setProjectErrorMessage] = useState<string>("");
   const [isOpen,setIsOpen] = useState<boolean>(false);
 
   return (
-    <div className="" onClick={()=>setSelectedProjectId(projectId)}>
+    <div className="" onClick={()=>setSelectedProjectProps((prev:any)=>{
+      return {
+        ...prev,
+        selectedProjectId:projectId,
+      }
+    })}>
       <EditModal modalTitle='Edit your project' modalDescription='Change your project title' setUser={setUser} projectTitle={projectTitle} projectId={`${projectId}`} isOpen={isOpen} setIsOpen={setIsOpen}/>
       <div className='bg-[#1e1e1e] p-4 rounded-md cursor-pointer'>
         <p className='font-[.9em] font-gray-200 font-medium text-center'>Project name: <span className="font-thin tracking-wide">{projectTitle}</span></p>

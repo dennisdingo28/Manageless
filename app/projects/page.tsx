@@ -4,14 +4,11 @@ import Auth from "@/components/hoc/Auth"
 import InfoCard from "@/components/pages/Projects/InfoCard"
 import CustomButton from "@/components/ui/CustomButton"
 import Modal from "@/components/ui/Modal"
-import axios from "axios"
 import { useSession } from "next-auth/react"
-import { Dispatch, SetStateAction, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { User } from "next-auth"
 import ProjectCard from "@/components/pages/Projects/ProjectCard"
-import mongoose from "mongoose"
 import { ProjectContentProps, ProjectProps } from "@/types"
-import { useFormValidation } from "@/hooks/useFormValidation"
 import JsonText from "@/components/ui/JsonText"
 import Tabs from "@/components/Tabs"
 
@@ -32,20 +29,23 @@ const page =  () => {
     const [userKey,setUserKey] = useState<string>("");
     const [user,setUser] = useState<User>();
     const [createContent,setCreateContent] = useState<boolean>(false);
-    const [validSelected,setValidSelected] = useState<boolean>(false);
-    const [selectedProjectId,setSelectedProjectId] = useState<string>("");
-    const [selectedProject,setSelectedProject] = useState<ProjectProps>();
-    const [selectedProjectFormMessage,setSelectedProjectFormMessage] = useState<string>("");
-    const [selectedProjectContent,setSelectedProjectContent] = useState<Array<ProjectContentProps> | undefined>([]);
-    const [selectedProjectChildrenKey,setSelectedProjectChildrenKey] = useState<string>("");
-    const [selectedProjectChildrenText,setSelectedProjectChildrenText] = useState<string>("");
-    const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
     const [createContentMessage,setCreateContentMessage] = useState<string>("")
+
+    const [selectedProjectProps,setSelectedProjectProps] = useState({
+      validSelected: false,
+      selectedProjectId: "",
+      selectedProject:{} as ProjectProps,
+      selectedProjectFormMessage:"",
+      selectedProjectContent: [] as Array<ProjectContentProps>,
+      selectedProjectChildrenKey: "",
+      selectedProjectChildrenText: "",
+      selectedProjectChildrenValid: false,
+    });
 
     useEffect(()=>{
       async function handleCreateContentObject(){
         try{
-            const req = await createContentObject(selectedProjectId,userKey,selectedProjectContent)
+            const req = await createContentObject(selectedProjectProps.selectedProjectId,userKey,selectedProjectProps.selectedProjectContent)
             if(!req.data.ok)
               setCreateContentMessage(req.data.msg);
         }catch(err){
@@ -54,13 +54,18 @@ const page =  () => {
       }
     if(createContent){
       const validatedInputs = validateObjectKeyValue({
-        childrenText:selectedProjectChildrenText,
-        childrenKey:selectedProjectChildrenKey,
+        childrenText:selectedProjectProps.selectedProjectChildrenText,
+        childrenKey:selectedProjectProps.selectedProjectChildrenKey,
       });
       if(!validatedInputs.valid){
-        setSelectedProjectChildrenValid(false);
+        setSelectedProjectProps(prev=>{
+          return {
+            ...prev,
+            selectedProjectChildrenValid:false,
+          }
+        })
         setTimeout(()=>{
-          clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
+          clearInputs(setSelectedProjectProps,setCreateContent,setCreateContentMessage);
         },1700);
       }
       else
@@ -72,45 +77,97 @@ const page =  () => {
     useEffect(()=>{  
       async function populateProjectContent(id: string){
         try{
-          setSelectedProjectFormMessage("Loading...");
-
+          setSelectedProjectProps(prev=>{
+            return {
+              ...prev,
+              selectedProjectFormMessage:"Loading...",
+            }
+          });
           const currentProject = await retrieveProject(id);
-          setSelectedProjectFormMessage("");
+          setSelectedProjectProps(prev=>{
+            return {
+              ...prev,
+              selectedProjectFormMessage:"Loading...",
+            }
+          });
           
           if(currentProject?.data.ok){
-            setValidSelected(true);
-            setSelectedProject(currentProject.data.project);
-
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                validSelected:true,
+              }
+            });
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                selectedProject:currentProject.data.project,
+              }
+            });
             const projectContentProperties = getObjectProperties(currentProject.data.project.projectContent);
-            setSelectedProjectContent(projectContentProperties);
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                selectedProjectContent:projectContentProperties,
+              }
+            });
             
           }else{
-            setValidSelected(false);
-            setSelectedProjectFormMessage("Something went wrong while trying to access your project. Please try again later.");
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                validSelected:false,
+              }
+            });
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                selectedProjectFormMessage:"Something went wrong while trying to access your project. Please try again later.",
+              }
+            });
             setTimeout(()=>{
-              setSelectedProjectId("");
+              setSelectedProjectProps(prev=>{
+                return {
+                  ...prev,
+                  selectedProjectId:"",
+                }
+              });
             },1700);
           }
           
         }catch(err){
-          setValidSelected(false);
-          setSelectedProjectFormMessage((err as Error).message);
+          setSelectedProjectProps(prev=>{
+            return {
+              ...prev,
+              validSelected:false,
+            }
+          });
+          setSelectedProjectProps(prev=>{
+            return {
+              ...prev,
+              selectedProjectFormMessage:(err as Error).message,
+            }
+          });
           setTimeout(()=>{
-            setSelectedProjectId("");
-
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                selectedProjectId:"",
+              }
+            });
           },1700);
           
         }finally{
           setTimeout(()=>{
-            clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
+            clearInputs(setSelectedProjectProps,setCreateContent,setCreateContentMessage);
           },1700);
         }
       }
-      if(selectedProjectId!==''){
-        populateProjectContent(selectedProjectId);
+      if(selectedProjectProps.selectedProjectId!==''){
+        populateProjectContent(selectedProjectProps.selectedProjectId);
         // setSelectedProjectContent([]);  
       }
-    },[selectedProjectId]);
+    },[selectedProjectProps.selectedProjectId]);
 
     useEffect(()=>{
       async function getUserAndKey(){
@@ -127,7 +184,7 @@ const page =  () => {
 
     async function deleteObjContent(obj:ProjectContentProps){
       try{
-        const req = await deleteContent(obj,userKey,user,setSelectedProjectContent);
+        const req = await deleteContent(obj,userKey,user,setSelectedProjectProps);
         if(!req.data.ok){
           setCreateContentMessage("Something went wrong while trying to delete the content.")
         }
@@ -135,7 +192,7 @@ const page =  () => {
         setCreateContentMessage("Something went wrong while trying to delete the content.")
       }finally{
         setTimeout(()=>{
-            clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
+          clearInputs(setSelectedProjectProps,setCreateContent,setCreateContentMessage);
         },1500);
       }
     }
@@ -196,7 +253,7 @@ const page =  () => {
                  ):(
                   <div className="flex flex-col flex-wrap gap-4 mt-6 md:flex-row">
                       {user?.projects.map(project=>(
-                          <ProjectCard key={`${project._id}`} userKey={userKey} user={user} setUser={setUser} deleteProject={deleteProject} setSelectedProjectId={setSelectedProjectId} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
+                          <ProjectCard key={`${project._id}`} userKey={userKey} user={user} setUser={setUser} deleteProject={deleteProject} setSelectedProjectProps={setSelectedProjectProps} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
                       ))}
                   </div>
                  )
@@ -205,32 +262,42 @@ const page =  () => {
               <section className="mt-20">
                 <div>
                   <h3 className="font-bold text-center sm:text-left text-[1.65em] tracking-wide">Selected Project</h3>
-                  {selectedProjectId==="" && <p className="font-thin whitespace-nowrap mt-3">No selected project.</p>}
+                  {selectedProjectProps.selectedProjectId==="" && <p className="font-thin whitespace-nowrap mt-3">No selected project.</p>}
                 </div>
-                {selectedProjectId!=="" && (
+                {selectedProjectProps.selectedProjectId!=="" && (
                   <div>
-                    {selectedProjectFormMessage!=='' && !validSelected ? (
-                      <p>{selectedProjectFormMessage}</p>
+                    {selectedProjectProps.selectedProjectFormMessage!=='' && !selectedProjectProps.validSelected ? (
+                      <p>{selectedProjectProps.selectedProjectFormMessage}</p>
                     ):(
                       <div className="bg-darkBlack p-2">
                         <div className="flex items-center justify-center gap-3">
-                          <h1 className="text-center font-light text-[1.2em]">{selectedProject?.projectTitle}</h1>
+                          <h1 className="text-center font-light text-[1.2em]">{selectedProjectProps.selectedProject?.projectTitle}</h1>
                           <small className="font-bold">{createContentMessage}</small>
                         </div>
                         <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-evenly">
                           
                           <div className="flex flex-col sm:flex-row items-center justify-center">
                             <div className="flex flex-col gap-2 sm:gap-0 sm:flex-row items-center w-[100%] sm:w-fit">
-                              <input value={selectedProjectChildrenKey} onChange={(e)=>setSelectedProjectChildrenKey(e.target.value)} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400 max-w-[100%] w-[100%]" placeholder="create child object key"/>
-                              <input value={selectedProjectChildrenText} onChange={(e)=>setSelectedProjectChildrenText(e.target.value)} className="outline-none font-thin bg-neutral-900 p-1 text-gray-400 placeholder:text-gray-400 sm:border-l max-w-[100%] w-[100%]" placeholder="value"/>
+                              <input value={selectedProjectProps.selectedProjectChildrenKey} onChange={(e)=>setSelectedProjectProps(prev=>{
+                                return {
+                                  ...prev,
+                                  selectedProjectChildrenKey:e.target.value,
+                                }
+                              })} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400 max-w-[100%] w-[100%]" placeholder="create child object key"/>
+                              <input value={selectedProjectProps.selectedProjectChildrenText} onChange={(e)=>setSelectedProjectProps(prev=>{
+                                return {
+                                  ...prev,
+                                  selectedProjectChildrenText:e.target.value,
+                                }
+                              })} className="outline-none font-thin bg-neutral-900 p-1 text-gray-400 placeholder:text-gray-400 sm:border-l max-w-[100%] w-[100%]" placeholder="value"/>
                             </div>
                             
                             <CustomButton handleClick={()=>{
                               setCreateContent(true);
-                              const key = selectedProjectChildrenKey;
-                              const value = selectedProjectChildrenText;
+                              const key = selectedProjectProps.selectedProjectChildrenKey;
+                              const value = selectedProjectProps.selectedProjectChildrenText;
 
-                              const propExist = selectedProjectContent?.filter(project=>{
+                              const propExist = selectedProjectProps.selectedProjectContent?.filter(project=>{
                                 const objKey = Object.keys(project)[0];
                                 return objKey===key;
                               })
@@ -239,27 +306,24 @@ const page =  () => {
                                 setCreateContentMessage(`Property ${key} already exists.`);
                                 setCreateContent(false);
                                 setTimeout(()=>{
-                                  clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
+                                  clearInputs(setSelectedProjectProps,setCreateContent,setCreateContentMessage);
                                 },1700);
                                 return;
                               }
-                              setSelectedProjectContent(prev=>{
-                                if(prev){
-                                 
+                              setSelectedProjectProps((prev:any)=>{
                                   if(value.trim()!==''){
+                                    return {...prev,
+                                        selectedProjectContent:[
+                                        ...prev.selectedProjectContent,
+                                        {[key]:value},
+                                      ]
+                                    }
 
-                                    return [
-                                      ...prev,
-                                      {[key]:value},
-                                    ]
-                                  }
-                                    
+                                  }   
                                   return prev;
-                                }
-                                  
                               });
                             }} classes="bg-neutral-700 mt-3 sm:mt-0 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75 w-[100%] max-w-[100%] sm:w-fit" text="Add"/>
-                            {!selectedProjectChildrenValid && (
+                            {!(selectedProjectProps.selectedProjectChildrenValid) && (
                               <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>
                             )}
                           </div>
@@ -271,8 +335,8 @@ const page =  () => {
                           </div>
                           <div className="bg-neutral-800 w-full p-3">
                             <p>{`{`}</p>
-                            {selectedProjectContent && (
-                              selectedProjectContent.map((content, index) => {
+                            {(selectedProjectProps.selectedProjectContent) && (
+                              selectedProjectProps.selectedProjectContent.map((content, index) => {
                                 const key = Object.keys(content)[0];
                                 
                                 const value = content[key];

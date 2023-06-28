@@ -1,5 +1,5 @@
 "use client";
-import React, { MouseEventHandler, useState } from 'react';
+import React, { useState } from 'react';
 import { JsonTextProps } from '@/types';
 
 const JsonText = ({ index, keyText, value, handleJsonClick }: JsonTextProps) => {

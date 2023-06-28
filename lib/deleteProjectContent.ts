@@ -4,7 +4,7 @@ import { User } from "next-auth";
 import getObjectProperties from "./utils/getObjectProperties";
 import { Dispatch, SetStateAction } from "react";
 
-export default async function deleteContent(obj:ProjectContentProps,userKey: string,user: User | undefined,setContent:Dispatch<SetStateAction<Array<ProjectContentProps> | undefined>>){
+export default async function deleteContent(obj:ProjectContentProps,userKey: string,user: User | undefined,setContent:any){
     try{
         if(!obj || Object.keys(obj).length===0)
             throw new Error('No object was provided. Please try again later.');
