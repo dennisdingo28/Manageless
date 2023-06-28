@@ -164,7 +164,6 @@ const page =  () => {
         }
         setErrorMessage(req.data.msg);
       }catch(err){
-        console.log(err);
         setErrorMessage((err as Error).message);
       }
     }
@@ -173,16 +172,21 @@ const page =  () => {
       try{
         if(!obj || Object.keys(obj).length===0)
           throw new Error('No object was provided. Please try again later.');
-        const req = await axios.post(`http://localhost:3000/api/deleteProjectContent`,{apiKey:userKey,user,object:obj});
-        console.log(req);
+        const req = await axios.post(`http://localhost:3000/api/deleteProjectContent`,{user,object:obj});
         if(req.data.ok){
           const newJsonContent = Object.keys(req.data.updatedProject.projectContent).map(projectKey=>{
             return {[projectKey]:req.data.updatedProject.projectContent[projectKey]}});
            setSelectedProjectContent(newJsonContent)
+        }else{
+          setCreateContentMessage("Something went wrong while trying to delete the content.")
         }
       }catch(err){
-        console.log(err);
-        
+        setCreateContentMessage("Something went wrong while trying to delete the content.")
+
+      }finally{
+        setTimeout(()=>{
+            clearInputs();
+        },1500);
       }
     }
 
@@ -220,9 +224,12 @@ const page =  () => {
             <div className="container mx-auto mt-10">
               <div className={`${user?.projects.length!==0 && "flex items-center justify-between"}`}>
                 <h3 className="font-bold text-left text-[1.65em] tracking-wide">Projects</h3>
-                {user?.projects.length!==0 && (
+                {user?.projects.length!<5 ? (
+                  user?.projects.length!==0 && (
                     <CustomButton handleClick={()=>{setOpenModal(true)}} text="Create Project" classes="border border-darkBlue p-2 hover:border-lightBlue duration-100 hover:-translate-y-1"/>
-                )}
+                  )
+                ):<p className="font-light text-[.95em]">You already have 5 projects. Delete one or contact the developer.</p>}
+                
               </div>
               <section>
                 { user?.projects.length===0 ? ( 

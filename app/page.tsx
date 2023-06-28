@@ -17,7 +17,7 @@ export default function Home() {
         <Developer/>
       </div>
       <div>
-        <Footer links={[{text:"Home",url:"/"},{text:"Projects",url:"/projects"},{text:"Pricing",url:"/pricing"},{text:"Documentation",url:"/docs"}]}/>
+        <Footer links={[{text:"Home",url:"/"},{text:"Projects",url:"/projects"}]}/>
       </div>
     </main>
   )

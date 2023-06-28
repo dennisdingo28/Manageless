@@ -17,15 +17,11 @@ const Footer = ({links}:LinksArrayProps) => {
                         </Link>
                     </div>
                     <div className="footerLinks">
-                        <div className="flex flex-wrap justify-between gap-3 md:gap-11">
+                        <div className="flex flex-wrap justify-center gap-3 md:gap-11">
                             {links.map(link=>(
                                 <Link key={link.text} href={link.url} className="lowercase font-light hover:text-lightBlue">{link.text}</Link>
                             ))}
-                        </div>
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-                            <input type="text" placeholder="newsletter" className="bg-transparent text-[#9ca3af] outline-none border-b-2 font-thin border-darkBlue pl-1"/>
-                            <CustomButton text="subscribe" classes="bg-lightBlue rounded-md px-2 py-1 font-semibold text-[.9em]"/>
-                        </div>
+                        </div>  
                     </div>
                 </div>
             </div>

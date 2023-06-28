@@ -39,7 +39,7 @@ const Author = ({authorName,authorDescription,authorRole,authorGithub,authorDisc
         <div className="authorHeader">
             <h2 className="uppercase font-bold text-[1.75em] text-center">DEVELOPER</h2>
         </div>
-        <div className="authorBody flex flex-col lg:flex-row lg:items-center">
+        <div className="authorBody flex flex-col lg:flex-row lg:items-center gap-4">
             <div className="lg:flex-1">
                 <div className="flex items-center justify-between lg:justify-normal lg:gap-2">
                     <div className="flex items-center gap-2">

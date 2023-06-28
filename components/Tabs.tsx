@@ -16,7 +16,7 @@ const Tabs = () => {
                     <button onClick={(()=>{
                             setIsOpen(true);
                             setCode(
-                                <div className="max-w-[100%] w-[100%] overflow-x-scroll">
+                                <div className="max-w-[100%] w-[100%] overflow-x-scroll py-2">
                                 <p className='text-lightBlue whitespace-nowrap'>const <span className='text-gray-300'>req</span> = <span className='text-purple-700'>await </span>
                                     <span className='text-gray-300'>axios</span>.get(<span className='text-yellow-600 font-light'>'http://localhost:3000/getProjectContent/[YOUR_API_KEY]/[PROJECT_TITLE]'</span>)
                                 </p>
@@ -52,7 +52,7 @@ const Tabs = () => {
                     <button onClick={(()=>{
                             setIsOpen(true);
                             setCode(
-                                <div className='max-w-[100%] w-[100%] overflow-x-scroll'>
+                                <div className='max-w-[100%] w-[100%] overflow-x-scroll py-2'>
                                 <p className='text-lightBlue whitespace-nowrap'>
                                     <span className='text-purple-700'>import</span> <span className='text-gray-300'>requests</span>
                                     <br />

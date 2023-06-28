@@ -42,11 +42,14 @@ const CodeModal = ({isOpen, setIsOpen, code }: any) => {
                     Javascript Example
                 </Dialog.Title>
                 <Dialog.Description className="bg-gray-900 rounded-md p-4 text-gray-300">
+                  <code>
                     {code}
+                  </code>
                 </Dialog.Description>
             </div>
           </Transition.Child>
         </div>
+        
       </Dialog>
     </Transition>
   );

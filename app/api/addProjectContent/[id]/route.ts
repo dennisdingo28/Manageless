@@ -46,6 +46,8 @@ export async function POST(req:NextRequest,{params}:{params:{id: string}}){
         });
 
         const updatedProject = await Project.findByIdAndUpdate({_id:projectId},{projectContent:{...project.projectContent,...newProjectContent}},{new:true,runValidators:true}).select('-projectPassword');
+        if(!updatedProject)
+            throw new Error(`Cannot find any project with the id of ${projectId}`);
         const updatedUser = await User.findOne({email:decodedUser.email,name:decodedUser.name,apiKey:apikey}).populate('projects',"projectTitle projectContent",Project);
         
 

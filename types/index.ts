@@ -17,6 +17,7 @@ export interface CricleProps {
 export interface LinkProps {
     text: string;
     url: string;
+    handleClick?: ()=>void;
 }
 export interface TextBoxProps {
     title: string;
@@ -24,9 +25,9 @@ export interface TextBoxProps {
     links?: Array<LinkProps>;
 }
 export interface AuthorProps {
-    authorName: string;
+    authorName?: string;
     authorDescription?: string;
-    authorEmail: string;
+    authorEmail?: string;
     authorRole?: string;
     authorGithub?: string;
     authorDiscord?: string;
