@@ -15,6 +15,9 @@ import { useFormValidation } from "@/hooks/useFormValidation"
 import JsonText from "@/components/ui/JsonText"
 import Tabs from "@/components/Tabs"
 
+import copyToClipboard from "@/lib/utils/copy"
+import deleteProject from "@/lib/deleteProject"
+
 const page =  () => {
     const {data:session,status} = useSession();
     const [copied,setCopied] = useState<boolean>(false);
@@ -142,31 +145,20 @@ const page =  () => {
       }
       getUserApiKey();
     },[status]);
-    
-    async function handleCopy(){
-      const clipboardText = await navigator.clipboard.readText();
-      if(clipboardText!==`${user?.apiKey}`){
-        await navigator.clipboard.writeText(`${user?.apiKey}`);
-      }
-      setCopied(true);
-      setTimeout(()=>{
-        setCopied(false);
-      },2000);
-    }
 
-    async function deleteProject(id: string,setErrorMessage: Dispatch<SetStateAction<string>>){
-      try{
-        if(!id || !mongoose.Types.ObjectId.isValid(id))
-          throw new Error(`ID ${id} is not a valid id. Please try again later.`);
-        const req = await axios.post(`http://localhost:3000/api/deleteProject/${id}`,{apiKey:userKey,user});
-        if(req.data.ok){
-          return setUser(req.data.updatedUser);
-        }
-        setErrorMessage(req.data.msg);
-      }catch(err){
-        setErrorMessage((err as Error).message);
-      }
-    }
+    // async function deleteProject(id: string,setErrorMessage: Dispatch<SetStateAction<string>>){
+    //   try{
+    //     if(!id || !mongoose.Types.ObjectId.isValid(id))
+    //       throw new Error(`ID ${id} is not a valid id. Please try again later.`);
+    //     const req = await axios.post(`http://localhost:3000/api/deleteProject/${id}`,{apiKey:userKey,user});
+    //     if(req.data.ok){
+    //       return setUser(req.data.updatedUser);
+    //     }
+    //     setErrorMessage(req.data.msg);
+    //   }catch(err){
+    //     setErrorMessage((err as Error).message);
+    //   }
+    // }
 
     async function deleteContent(obj:ProjectContentProps){
       try{
@@ -207,7 +199,13 @@ const page =  () => {
                         <p className="p-1 text-slate-500">{userKey}</p>
                         <div className="bg-slate-800 p-1 rounded-r-md">
                           {!copied ? (
-                            <i className="bi bi-clipboard cursor-pointer" onClick={handleCopy}></i>
+                            <i className="bi bi-clipboard cursor-pointer" onClick={()=>{
+                              copyToClipboard(user?.apiKey!);
+                              setCopied(true);
+                              setTimeout(()=>{
+                                setCopied(false);
+                              },2000);
+                            }}></i>
                           ):(
                             <i className="bi bi-clipboard2-check"></i>
                           )}
@@ -242,7 +240,7 @@ const page =  () => {
                  ):(
                   <div className="flex flex-col flex-wrap gap-4 mt-6 md:flex-row">
                       {user?.projects.map(project=>(
-                          <ProjectCard key={`${project._id}`} setUser={setUser} deleteProject={deleteProject} setSelectedProjectId={setSelectedProjectId} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
+                          <ProjectCard key={`${project._id}`} userKey={userKey} user={user} setUser={setUser} deleteProject={deleteProject} setSelectedProjectId={setSelectedProjectId} projectTitle={project.projectTitle} projectId={`${project._id}`}/>
                       ))}
                   </div>
                  )

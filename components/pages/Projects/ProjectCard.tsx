@@ -7,7 +7,7 @@ import { useState } from 'react';
 import EditModal from './EditModal';
 
 
-const ProjectCard = ({projectTitle,setUser,projectId,deleteProject,setSelectedProjectId}:ProjectCardProps) => {
+const ProjectCard = ({projectTitle,user,userKey,setUser,projectId,deleteProject,setSelectedProjectId}:ProjectCardProps) => {
   const [projectErrorMessage,setProjectErrorMessage] = useState<string>("");
   const [isOpen,setIsOpen] = useState<boolean>(false);
 
@@ -23,7 +23,7 @@ const ProjectCard = ({projectTitle,setUser,projectId,deleteProject,setSelectedPr
             <i onClick={async (e:MouseEvent<HTMLButtonElement>)=>{
               e.stopPropagation();
               setProjectErrorMessage("Loading...");
-              await deleteProject(`${projectId}`,setProjectErrorMessage)
+              await deleteProject(`${projectId}`,userKey,user,setUser,setProjectErrorMessage)
               
               setTimeout(() => {
                 setProjectErrorMessage("");
