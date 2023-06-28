@@ -18,6 +18,10 @@ import Tabs from "@/components/Tabs"
 import copyToClipboard from "@/lib/utils/copy"
 import deleteProject from "@/lib/deleteProject"
 import getUserApiKey from "@/lib/getUserApiKey"
+import retrieveProject from "@/lib/retrieveProject"
+import getObjectProperties from "@/lib/utils/getObjectProperties"
+import createContentObject from "@/lib/addProjectContent"
+import validateObjectKeyValue from "@/lib/validateObjectKeyValue"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -48,70 +52,53 @@ const page =  () => {
     useEffect(()=>{
       async function handleCreateContentObject(){
         try{
-          const formData = {
-            childrenText:selectedProjectChildrenText,
-            childrenKey:selectedProjectChildrenKey,
-          }
-          const {validateForm} = useFormValidation();
-          const validatedInputs = validateForm(formData);
-          console.log(validatedInputs);
-          
-          if(!validatedInputs.valid){
-            setSelectedProjectChildrenValid(false);
-          }else{
-            const req = await axios.post(`http://localhost:3000/api/addProjectContent/${selectedProjectId}`,{
-              apiKey:userKey,
-              token:JSON.parse(localStorage.getItem('token') || ""),
-              content:selectedProjectContent,
-            });
+            const req = await createContentObject(selectedProjectId,userKey,selectedProjectContent)
             if(!req.data.ok)
               setCreateContentMessage(req.data.msg);
-          }
         }catch(err){
-          console.log(err);
           setCreateContentMessage((err as Error).message);
-        }finally{
-          setTimeout(()=>{
-            clearInputs();
-          },1700);
         }
       }
-    if(createContent)
+    if(createContent){
+      const validatedInputs = validateObjectKeyValue({
+        childrenText:selectedProjectChildrenText,
+        childrenKey:selectedProjectChildrenKey,
+      });
+      if(!validatedInputs.valid){
+        setSelectedProjectChildrenValid(false);
+        setTimeout(()=>{
+          clearInputs();
+        },1700);
+      }
+      else
         handleCreateContentObject();
+    }
     },[createContent]);
     
 
     useEffect(()=>{  
-      async function retrieveProject(id: string){
+      async function populateProjectContent(id: string){
         try{
           setSelectedProjectFormMessage("Loading...");
 
-          const req = await axios.get(`http://localhost:3000/api/getProject/${id}`);
+          const currentProject = await retrieveProject(id);
           setSelectedProjectFormMessage("");
-          if(req.data.ok){
+          console.log("cp",currentProject);
+          
+          if(currentProject?.data.ok){
             setValidSelected(true);
-            setSelectedProject(req.data.project);
-            Object.keys(req.data.project.projectContent).map(obj=>{
-              const projectContentKey = obj;
-              const projectContentValue = req.data.project.projectContent[projectContentKey];
-              setSelectedProjectContent(prev=>{
-                if(prev)
-                  return [
-                    ...prev,
-                    {[projectContentKey]:projectContentValue},
-                  ]
-                else return prev;
-              })
-            })
+            setSelectedProject(currentProject.data.project);
+
+            const projectContentProperties = getObjectProperties(currentProject.data.project.projectContent);
+            setSelectedProjectContent(projectContentProperties);
+            
           }else{
             setValidSelected(false);
-            setSelectedProjectFormMessage(req.data.msg);
+            setSelectedProjectFormMessage("Something went wrong while trying to access your project. Please try again later.");
             setTimeout(()=>{
               setSelectedProjectId("");
-
             },1700);
           }
-          console.log(req);
           
         }catch(err){
           setValidSelected(false);
@@ -128,8 +115,8 @@ const page =  () => {
         }
       }
       if(selectedProjectId!==''){
-        retrieveProject(selectedProjectId);
-        setSelectedProjectContent([]);  
+        populateProjectContent(selectedProjectId);
+        // setSelectedProjectContent([]);  
       }
     },[selectedProjectId]);
 
