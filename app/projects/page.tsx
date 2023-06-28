@@ -22,6 +22,8 @@ import retrieveProject from "@/lib/retrieveProject"
 import getObjectProperties from "@/lib/utils/getObjectProperties"
 import createContentObject from "@/lib/addProjectContent"
 import validateObjectKeyValue from "@/lib/validateObjectKeyValue"
+import clearInputs from "@/lib/utils/clearProjectInputs"
+import deleteContent from "@/lib/deleteProjectContent"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -40,15 +42,7 @@ const page =  () => {
     const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
     const [createContentMessage,setCreateContentMessage] = useState<string>("")
     
-    function clearInputs(){
-      setSelectedProjectChildrenText("");
-      setSelectedProjectChildrenKey("");
-      setSelectedProjectChildrenValid(true);
-      setCreateContent(false);
-      setSelectedProjectFormMessage("");
-      setValidSelected(false);
-      setCreateContentMessage("");
-    }
+
     useEffect(()=>{
       async function handleCreateContentObject(){
         try{
@@ -67,7 +61,7 @@ const page =  () => {
       if(!validatedInputs.valid){
         setSelectedProjectChildrenValid(false);
         setTimeout(()=>{
-          clearInputs();
+          clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
         },1700);
       }
       else
@@ -110,7 +104,7 @@ const page =  () => {
           
         }finally{
           setTimeout(()=>{
-            clearInputs();
+            clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
           },1700);
         }
       }
@@ -133,17 +127,12 @@ const page =  () => {
       getUserAndKey();
     },[status]);
 
-    async function deleteContent(obj:ProjectContentProps){
+    async function deleteObjContent(obj:ProjectContentProps){
       try{
-        if(!obj || Object.keys(obj).length===0)
-          throw new Error('No object was provided. Please try again later.');
-        const req = await axios.post(`http://localhost:3000/api/deleteProjectContent`,{apiKey:userKey,user,object:obj});
-        console.log(req);
-        
+        const req = await deleteContent(obj,userKey,user);
         if(req.data.ok){
-          const newJsonContent = Object.keys(req.data.updatedProject.projectContent).map(projectKey=>{
-            return {[projectKey]:req.data.updatedProject.projectContent[projectKey]}});
-           setSelectedProjectContent(newJsonContent)
+          const newJsonContent = getObjectProperties(req.data.updatedProject.projectContent);
+          setSelectedProjectContent(newJsonContent);
         }else{
           setCreateContentMessage("Something went wrong while trying to delete the content.")
         }
@@ -152,7 +141,7 @@ const page =  () => {
 
       }finally{
         setTimeout(()=>{
-            clearInputs();
+            clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
         },1500);
       }
     }
@@ -256,7 +245,7 @@ const page =  () => {
                                 setCreateContentMessage(`Property ${key} already exists.`);
                                 setCreateContent(false);
                                 setTimeout(()=>{
-                                  clearInputs();
+                                  clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
                                 },1700);
                                 return;
                               }
@@ -295,7 +284,7 @@ const page =  () => {
                                 const value = content[key];
                                 return (
                                   <div className="ml-3">
-                                    <JsonText key={index} keyText={key} value={value} handleJsonClick={deleteContent}/>
+                                    <JsonText key={index} keyText={key} value={value} handleJsonClick={deleteObjContent}/>
                                   </div>
                                 );
                               })
