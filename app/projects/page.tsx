@@ -172,7 +172,9 @@ const page =  () => {
       try{
         if(!obj || Object.keys(obj).length===0)
           throw new Error('No object was provided. Please try again later.');
-        const req = await axios.post(`http://localhost:3000/api/deleteProjectContent`,{user,object:obj});
+        const req = await axios.post(`http://localhost:3000/api/deleteProjectContent`,{apiKey:userKey,user,object:obj});
+        console.log(req);
+        
         if(req.data.ok){
           const newJsonContent = Object.keys(req.data.updatedProject.projectContent).map(projectKey=>{
             return {[projectKey]:req.data.updatedProject.projectContent[projectKey]}});
