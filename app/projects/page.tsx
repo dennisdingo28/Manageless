@@ -17,6 +17,7 @@ import Tabs from "@/components/Tabs"
 
 import copyToClipboard from "@/lib/utils/copy"
 import deleteProject from "@/lib/deleteProject"
+import getUserApiKey from "@/lib/getUserApiKey"
 
 const page =  () => {
     const {data:session,status} = useSession();
@@ -133,32 +134,17 @@ const page =  () => {
     },[selectedProjectId]);
 
     useEffect(()=>{
-      async function getUserApiKey(){
-        if(status==="authenticated"){
-          const user = await axios.get(`http://localhost:3000/api/getUser/${session?.user?._id}`);
-          
-          if(user.data.ok){
-            setUserKey(user.data.user.apiKey);
-            setUser(user.data.user);
-          }
+      async function getUserAndKey(){
+        if(status==="authenticated"){      
+          const loggedUser = await getUserApiKey(session.user?._id!); 
+          if(loggedUser){
+            setUserKey(loggedUser.user.apiKey);
+            setUser(loggedUser.user);
+          }         
         }
       }
-      getUserApiKey();
+      getUserAndKey();
     },[status]);
-
-    // async function deleteProject(id: string,setErrorMessage: Dispatch<SetStateAction<string>>){
-    //   try{
-    //     if(!id || !mongoose.Types.ObjectId.isValid(id))
-    //       throw new Error(`ID ${id} is not a valid id. Please try again later.`);
-    //     const req = await axios.post(`http://localhost:3000/api/deleteProject/${id}`,{apiKey:userKey,user});
-    //     if(req.data.ok){
-    //       return setUser(req.data.updatedUser);
-    //     }
-    //     setErrorMessage(req.data.msg);
-    //   }catch(err){
-    //     setErrorMessage((err as Error).message);
-    //   }
-    // }
 
     async function deleteContent(obj:ProjectContentProps){
       try{
