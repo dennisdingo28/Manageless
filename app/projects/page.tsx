@@ -41,7 +41,6 @@ const page =  () => {
     const [selectedProjectChildrenText,setSelectedProjectChildrenText] = useState<string>("");
     const [selectedProjectChildrenValid,setSelectedProjectChildrenValid] = useState<boolean>(true);
     const [createContentMessage,setCreateContentMessage] = useState<string>("")
-    
 
     useEffect(()=>{
       async function handleCreateContentObject(){
@@ -77,7 +76,6 @@ const page =  () => {
 
           const currentProject = await retrieveProject(id);
           setSelectedProjectFormMessage("");
-          console.log("cp",currentProject);
           
           if(currentProject?.data.ok){
             setValidSelected(true);
@@ -129,16 +127,12 @@ const page =  () => {
 
     async function deleteObjContent(obj:ProjectContentProps){
       try{
-        const req = await deleteContent(obj,userKey,user);
-        if(req.data.ok){
-          const newJsonContent = getObjectProperties(req.data.updatedProject.projectContent);
-          setSelectedProjectContent(newJsonContent);
-        }else{
+        const req = await deleteContent(obj,userKey,user,setSelectedProjectContent);
+        if(!req.data.ok){
           setCreateContentMessage("Something went wrong while trying to delete the content.")
         }
       }catch(err){
         setCreateContentMessage("Something went wrong while trying to delete the content.")
-
       }finally{
         setTimeout(()=>{
             clearInputs(setSelectedProjectChildrenText,setSelectedProjectChildrenKey,setSelectedProjectChildrenValid,setCreateContent,setValidSelected,setSelectedProjectFormMessage,setCreateContentMessage);
