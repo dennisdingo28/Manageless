@@ -41,7 +41,8 @@ const page =  () => {
       selectedProjectChildrenText: "" as string,
       selectedProjectChildrenValid: false,
     });
-
+    console.log(selectedProjectProps);
+    
     useEffect(()=>{
       async function handleCreateContentObject(){
         try{
@@ -277,7 +278,7 @@ const page =  () => {
                     ):(
                       <div className="bg-darkBlack p-2">
                         <div className="flex items-center justify-center gap-3">
-                          <h1 className="text-center font-light text-[1.2em]">{selectedProjectProps.selectedProject?.projectTitle}</h1>
+                          <h1 className="text-center font-light text-[1.2em]">{selectedProjectProps.selectedProject.projectTitle}</h1>
                           <small className="font-bold">{createContentMessage}</small>
                         </div>
                         <div className="flex flex-col gap-4 mt-6 sm:flex-row sm:items-center sm:justify-evenly">
@@ -329,7 +330,7 @@ const page =  () => {
                                   return prev;
                               });
                             }} classes="bg-neutral-700 mt-3 sm:mt-0 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75 w-[100%] max-w-[100%] sm:w-fit" text="Add"/>
-                            {!(selectedProjectProps.selectedProjectChildrenValid) && (
+                            {(createContent && !(selectedProjectProps.selectedProjectChildrenValid)) && (
                               <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>
                             )}
                           </div>
