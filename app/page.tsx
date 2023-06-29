@@ -3,7 +3,6 @@ import Developer from "@/components/Developer"
 import Footer from "@/components/Footer"
 import Hero from "@/components/Hero"
 import Navbar from "@/components/Navbar"
-import Testomonials from "@/components/Testomonials"
 
 export default function Home() {
   return (
@@ -13,7 +12,6 @@ export default function Home() {
       </div>
       <div>
         <About/>
-        <Testomonials/>
         <Developer/>
       </div>
       <div>

@@ -15,12 +15,3 @@ export default function clearInputs(setSelectedProjectProps:any,setCreateContent
     setCreateContent(false);
     setCreateContentMessage("");
 }
-/*
-setSelectedProjectChildrenText("");
-      setSelectedProjectChildrenKey("");
-      setSelectedProjectChildrenValid(true);
-      setCreateContent(false);
-      setSelectedProjectFormMessage("");
-      setValidSelected(false);
-      setCreateContentMessage("");
-*/

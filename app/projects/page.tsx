@@ -253,7 +253,7 @@ const page =  () => {
                 <div className="my-3">
                   <p className="text-center text-slate-500 p-1">You got {user?.projects.length} / 5 projects</p>
                   </div>} cardFooter={<small className="text-gray-400">We give premium content for free</small>}/>
-                <InfoCard cardTitle="Manageless api usage" cardBody={<p>status:medium</p>} cardFooter={<p className="text-green-600">online</p>}/>
+                <InfoCard cardTitle="Manageless api usage" cardBody={<p className="text-center text-slate-500">soon...</p>}/>
               </div>
             </div>
             <div className="container mx-auto mt-10">

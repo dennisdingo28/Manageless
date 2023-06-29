@@ -5,7 +5,7 @@ import AuthProvider from '@/components/AuthProvider'
 export const metadata = {
   title:"Manageless",
   description:"Free Lightweight content management system for better management",
-  keywords:['Content Management','Content','Free Content Management','Managaless']
+  keywords:['Content Management','Content','Free Content Management','Managaless'],
 }
 
 export default function RootLayout({
