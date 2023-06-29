@@ -42,6 +42,10 @@ const page =  () => {
       selectedProjectChildrenValid: false,
     });
     console.log(selectedProjectProps);
+    useEffect(()=>{
+      if(user?.projects.length===5)
+        setOpenModal(false);
+    },[user?.projects.length]);
     
     useEffect(()=>{
       async function handleCreateContentObject(){
@@ -185,7 +189,6 @@ const page =  () => {
         console.log(selectedProjectProps.selectedProjectId);
         
         populateProjectContent(selectedProjectProps.selectedProjectId);
-        // setSelectedProjectContent([]);  
       }
     },[selectedProjectProps.selectedProjectId]);
 
