@@ -6,8 +6,6 @@ import { NextRequest,NextResponse } from "next/server";
 
 export async function GET(req: NextRequest,{params}:{params:{api_key:string, project_title: string}}){
     try{
-        console.log(params);
-        const origin = req.headers.get('origin');
 
         if(!params)
             throw new Error('No parameters were provided. Please provide a valid api key and project title. Check our docs.');
@@ -22,11 +20,7 @@ export async function GET(req: NextRequest,{params}:{params:{api_key:string, pro
         const project = user.projects.find((project: ProjectProps)=>project.projectTitle===params.project_title);
         if(!project)
             throw new Error(`Cannot find any post with project title ${params.project_title}`);
-        return NextResponse.json({ok:true,projectContent:project.projectContent,status:200, headers: {
-            'Access-Control-Allow-Origin': origin || '*',
-            'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
-            'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-        }});
+        return NextResponse.json({ok:true,projectContent:project.projectContent});
 
     }catch(err){
         if(err instanceof mongoose.Error.CastError)
