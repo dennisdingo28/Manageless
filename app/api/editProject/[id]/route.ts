@@ -25,8 +25,8 @@ export async function POST(req:NextRequest,{params}:{params:{id:string}}){
         if(!decodedUser || Object.keys(decodedUser).length===0)
             throw new Error("Cannot decode the user. Please try again later.");
         const targetProject = await Project.findById({_id:projectId});
-
-        if(targetProject.projectPassword===data.password){
+        const passwordMatch = await targetProject.comparePassword(data.password);
+        if(passwordMatch){
             const updatedTargetProject = await Project.findByIdAndUpdate({_id:projectId},{projectTitle:data.newTitle},{new:true,runValidators:true});
             const updatedUser = await User.findOne({email:decodedUser.email,name:decodedUser.name}).populate("projects");
             
