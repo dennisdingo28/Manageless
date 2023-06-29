@@ -7,7 +7,7 @@ import Navbar from "@/components/Navbar"
 export default function Home() {
   return (
     <main className="">
-      <div className="landingContent bg-darkBlack">
+      <div className="landingContent bg-darkBlack pb-5">
         <Hero/>
       </div>
       <div>

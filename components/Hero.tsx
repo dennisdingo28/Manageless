@@ -7,8 +7,8 @@ const Hero = () => {
   return (
     <main className='container mx-auto text-white'>
       <div className='flex flex-col lg:flex-row lg:items-center'>
-        <div className='hero flex flex-col gap-8 mt-2'>
-            <h1 className='text-left font-bold font-montserrat text-[1.6em] xs:text-[2.3em] sm:text-[3em] sm:text-center'>
+        <div className='hero flex flex-col gap-4 mt-2'>
+            <h1 className='text-left font-bold font-montserrat text-[1.6em] xs:text-[2.3em] sm:text-[3em] sm:text-center md:text-left'>
                 Streamline <span className='text-lightBlue'>Text</span> Content Management for Developers and <span className='text-lightBlue'>Clients </span>
                 for <span className='text-purple-500 font-bold'>FREE</span>
                 <br/>
