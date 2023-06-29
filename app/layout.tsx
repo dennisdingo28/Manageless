@@ -4,7 +4,7 @@ import AuthProvider from '@/components/AuthProvider'
 
 export const metadata = {
   title:"Manageless",
-  description:"Free Lightweight content management system for better management",
+  description:"Free Lightweight Text content management system for better management",
   keywords:['Content Management','Content','Text','Free Content Management','Managaless'],
 }
 
