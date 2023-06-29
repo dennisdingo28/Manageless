@@ -22,6 +22,14 @@ const nextConfig = {
             }
         ]
     },
+    async rewrites() {
+        return [
+          {
+            source: '/api/:path*',
+            destination: 'https://manageless.vercel.app/api/:path*', // Replace with your API endpoint
+          },
+        ];
+    },
     async headers(){
         return [
             {
@@ -31,7 +39,7 @@ const nextConfig = {
                 source: "/api/:path*",
                 headers: [
                   { key: "Access-Control-Allow-Credentials", value: "true" },
-                  { key: "Access-Control-Allow-Origin", value: "https://manageless.vercel.app" },
+                  { key: "Access-Control-Allow-Origin", value: "*" },
                   {
                     key: "Access-Control-Allow-Methods",
                     value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
