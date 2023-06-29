@@ -6,7 +6,7 @@ import { NextApiRequest } from "next/types";
 import { NextApiResponse } from "next/types";
 import NextCors from "nextjs-cors";
 
-export async function GET(req: NextApiRequest,res: NextApiResponse{params}:{params:{api_key:string, project_title: string}}){
+export async function GET(req: NextApiRequest,res: NextApiResponse,{params}:{params:{api_key:string, project_title: string}}){
     try{
         console.log(params);
         await NextCors(req, res, {
