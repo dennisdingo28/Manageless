@@ -22,14 +22,6 @@ const nextConfig = {
             }
         ]
     },
-    // async rewrites() {
-    //     return [
-    //       {
-    //         source: '/api/getProjectContent/:api_key/:project_title',
-    //         destination: 'https://manageless.vercel.app/api/getProjectContent/:api_key/:project_title', // Replace with your API endpoint
-    //       },
-    //     ];
-    // }, 
     async headers() {
         return [
           {
