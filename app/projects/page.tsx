@@ -306,7 +306,7 @@ const page =  () => {
                                   ...prev,
                                   selectedProjectChildrenKey:e.target.value,
                                 }
-                              })} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400 max-w-[100%] w-[100%]" placeholder="create child object key"/>
+                              })} className="outline-none font-thin bg-neutral-900 rounded-l-md p-1 text-gray-400 placeholder:text-gray-400 max-w-[100%] w-[100%]" placeholder="key"/>
                               <input value={selectedProjectProps.selectedProjectChildrenText} onChange={(e)=>setSelectedProjectProps(prev=>{
                                 return {
                                   ...prev,
