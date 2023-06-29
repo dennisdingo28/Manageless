@@ -9,7 +9,7 @@ export default async function deleteProject(id: string,userKey: string,user: Use
       try{
         if(!id || !mongoose.Types.ObjectId.isValid(id))
           throw new Error(`ID ${id} is not a valid id. Please try again later.`);
-        const req = await axios.post(`https://manageless.vercel.app/api/deleteProject/${id}`,{apiKey:userKey,user});
+        const req = await axios.post(`http://localhost:3000/api/deleteProject/${id}`,{apiKey:userKey,user});
         
         if(req.data.ok){
           setSelectedProjectProps((prev:any)=>{

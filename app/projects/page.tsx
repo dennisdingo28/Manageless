@@ -283,6 +283,7 @@ const page =  () => {
               </section>
               <section className="mt-20">
                 <div>
+                  
                   <h3 className="font-bold text-center sm:text-left text-[1.65em] tracking-wide">Selected Project</h3>
                   {selectedProjectProps.selectedProjectId==="" && <p className="font-thin whitespace-nowrap mt-3">No selected project.</p>}
                 </div>
@@ -353,7 +354,11 @@ const page =  () => {
                         </div>
                         <div className="mt-3">
                           <div className="flex flex-col sm:flex-row  items-center justify-between mb-2">
-                            <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
+                            <div className="flex flex-col">
+                              <h3 className="text-left font-poppins text-[.95em] text-gray-300">Content Object Preview</h3>
+                              <span className="text-neutral-500 text-[.85em]">/* click to delete */</span>
+                            </div>
+                            
                             <Tabs/>    
                           </div>
                           <div className="bg-neutral-800 w-full p-3">
