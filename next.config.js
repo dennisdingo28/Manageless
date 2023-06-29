@@ -39,7 +39,7 @@ const nextConfig = {
                 source: "/api/:path*",
                 headers: [
                   { key: "Access-Control-Allow-Credentials", value: "true" },
-                  { key: "Access-Control-Allow-Origin", value:origin | "*" },
+                  { key: "Access-Control-Allow-Origin", value: "https://manageless.vercel.app" },
                   {
                     key: "Access-Control-Allow-Methods",
                     value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
