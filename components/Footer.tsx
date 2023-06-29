@@ -7,7 +7,7 @@ import CustomButton from "./ui/CustomButton"
 const Footer = ({links}:LinksArrayProps) => {
   return (
     <div className="mt-20">
-        <Announce text="We get it all for free!"/>
+        <Announce text="We give it all for free!"/>
         <div className="bg-darkBlack text-white py-4">
             <div className="container mx-auto">
                 <div className="flex flex-col gap-10 md:flex-row md:justify-between md:items-center">
