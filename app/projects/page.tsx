@@ -51,6 +51,10 @@ const page =  () => {
               setCreateContentMessage(req.data.msg);
         }catch(err){
           setCreateContentMessage((err as Error).message);
+        }finally{
+          clearInputs(setSelectedProjectProps,setCreateContent,setCreateContentMessage);
+
+          setCreateContent(false);
         }
       }
     if(createContent){
@@ -164,7 +168,16 @@ const page =  () => {
           
         }finally{
           setTimeout(()=>{
-            clearInputs(setSelectedProjectProps,setCreateContent,setCreateContentMessage);
+            setSelectedProjectProps(prev=>{
+              return {
+                ...prev,
+                selectedProjectChildrenValid:true,
+                selectedProjectFormMessage:"",
+                validSelected:false,
+              }
+            })
+            setCreateContent(false);
+            setCreateContentMessage("");
           },1700);
         }
       }
@@ -192,6 +205,8 @@ const page =  () => {
     async function deleteObjContent(obj:ProjectContentProps){
       try{
         const req = await deleteContent(obj,userKey,user,setSelectedProjectProps);
+        console.log("delete",req);
+        
         if(!req.data.ok){
           setCreateContentMessage("Something went wrong while trying to delete the content.")
         }
@@ -300,7 +315,6 @@ const page =  () => {
                             </div>
                             
                             <CustomButton handleClick={()=>{
-                              setCreateContent(true);
                               const key = selectedProjectProps.selectedProjectChildrenKey;
                               const value = selectedProjectProps.selectedProjectChildrenText;
 
@@ -329,6 +343,8 @@ const page =  () => {
                                   }   
                                   return prev;
                               });
+                              setCreateContent(true);
+
                             }} classes="bg-neutral-700 mt-3 sm:mt-0 font-medium font-montserrat rounded-r-md p-1 text-gray-300 hover:bg-neutral-800 duration-75 w-[100%] max-w-[100%] sm:w-fit" text="Add"/>
                             {(createContent && !(selectedProjectProps.selectedProjectChildrenValid)) && (
                               <p className="text-lightBlue font-thin ml-3">Cannot be blank.</p>

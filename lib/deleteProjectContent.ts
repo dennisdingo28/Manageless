@@ -2,7 +2,6 @@ import axios from "axios";
 import { ProjectContentProps } from "@/types";
 import { User } from "next-auth";
 import getObjectProperties from "./utils/getObjectProperties";
-import { Dispatch, SetStateAction } from "react";
 
 export default async function deleteContent(obj:ProjectContentProps,userKey: string,user: User | undefined,setContent:any){
     try{
@@ -12,7 +11,12 @@ export default async function deleteContent(obj:ProjectContentProps,userKey: str
         if(req.data.ok)
         {
             const newJsonContent = getObjectProperties(req.data.updatedProject.projectContent);
-            setContent(newJsonContent);
+            setContent((prev: any)=>{
+                return {
+                    ...prev,
+                    selectedProjectContent:newJsonContent
+                }
+            });
         }
         return req;
     }catch(err){

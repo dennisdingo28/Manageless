@@ -8,7 +8,7 @@ import EditModal from './EditModal';
 
 
 const ProjectCard = ({projectTitle,user,userKey,setUser,projectId,deleteProject,setSelectedProjectProps}:ProjectCardProps) => {
-  const [projectErrorMessage,setProjectErrorMessage] = useState<string>("");
+  const [projectError,setProjectError] = useState<string>("");
   const [isOpen,setIsOpen] = useState<boolean>(false);
 
   return (
@@ -27,17 +27,17 @@ const ProjectCard = ({projectTitle,user,userKey,setUser,projectId,deleteProject,
               setIsOpen(true)}} className="bi bi-pencil-square cursor-pointer hover:text-gray-400 duration-75"></i>
             <i onClick={async (e:MouseEvent<HTMLButtonElement>)=>{
               e.stopPropagation();
-              setProjectErrorMessage("Loading...");
-              await deleteProject(`${projectId}`,userKey,user,setUser,setProjectErrorMessage)
+              setProjectError("Loading...");
+              await deleteProject(`${projectId}`,userKey,user,setUser,setSelectedProjectProps,setProjectError)
               
               setTimeout(() => {
-                setProjectErrorMessage("");
+                setProjectError("");
 
               }, 2000);
             
             }} className="bi bi-trash3 cursor-pointer hover:text-gray-400 duration-75"></i>
           </div>
-        <p className='text-center whitespace-wrap font-extralight'>{projectErrorMessage}</p>
+        <p className='text-center whitespace-wrap font-extralight'>{projectError}</p>
       </div>
     </div>
     

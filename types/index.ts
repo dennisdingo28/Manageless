@@ -107,8 +107,9 @@ export interface ProjectCardProps{
     userKey: string;
     user: User;
     setUser: Dispatch<SetStateAction<User | undefined>>;
-    deleteProject: (id: string,userKey: string,user: User,setUser: Dispatch<SetStateAction<User | undefined>>, setErrorMessage:Dispatch<SetStateAction<string>>)=>void;
-    setSelectedProjectProps: Dispatch<SetStateAction<any>>;
+    deleteProject: (id: string,userKey: string,user: User,setUser: Dispatch<SetStateAction<User | undefined>>,setSelectedProjectProps: Dispatch<SetStateAction<string>>, setProjectError: Dispatch<SetStateAction<any>>)=>void;
+    setSelectedProjectProps: Dispatch<SetStateAction<any>>
+    
 }
 export interface ProjectContentProps {
     [key: string]: string;
