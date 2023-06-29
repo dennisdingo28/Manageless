@@ -25,8 +25,8 @@ const nextConfig = {
     async rewrites() {
         return [
           {
-            source: '/api/:path*',
-            destination: 'https://manageless.vercel.app/api/:path*', // Replace with your API endpoint
+            source: '/api/getProjectContent/:path*',
+            destination: 'https://manageless.vercel.app/api/getProjectContent/:path*', // Replace with your API endpoint
           },
         ];
     },
