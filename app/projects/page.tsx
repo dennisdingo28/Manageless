@@ -32,13 +32,13 @@ const page =  () => {
     const [createContentMessage,setCreateContentMessage] = useState<string>("")
 
     const [selectedProjectProps,setSelectedProjectProps] = useState({
-      validSelected: false,
-      selectedProjectId: "",
+      validSelected: false as boolean,
+      selectedProjectId: "" as string,
       selectedProject:{} as ProjectProps,
-      selectedProjectFormMessage:"",
+      selectedProjectFormMessage:"" as string,
       selectedProjectContent: [] as Array<ProjectContentProps>,
-      selectedProjectChildrenKey: "",
-      selectedProjectChildrenText: "",
+      selectedProjectChildrenKey: "" as string,
+      selectedProjectChildrenText: "" as string,
       selectedProjectChildrenValid: false,
     });
 
@@ -84,6 +84,8 @@ const page =  () => {
             }
           });
           const currentProject = await retrieveProject(id);
+          console.log(currentProject);
+          
           setSelectedProjectProps(prev=>{
             return {
               ...prev,
@@ -91,7 +93,7 @@ const page =  () => {
             }
           });
           
-          if(currentProject?.data.ok){
+          if(currentProject.data.ok){
             setSelectedProjectProps(prev=>{
               return {
                 ...prev,
@@ -105,6 +107,8 @@ const page =  () => {
               }
             });
             const projectContentProperties = getObjectProperties(currentProject.data.project.projectContent);
+            console.log(projectContentProperties);
+            
             setSelectedProjectProps(prev=>{
               return {
                 ...prev,
@@ -122,7 +126,7 @@ const page =  () => {
             setSelectedProjectProps(prev=>{
               return {
                 ...prev,
-                selectedProjectFormMessage:"Something went wrong while trying to access your project. Please try again later.",
+                selectedProjectFormMessage:currentProject.data.msg,
               }
             });
             setTimeout(()=>{
@@ -163,7 +167,9 @@ const page =  () => {
           },1700);
         }
       }
-      if(selectedProjectProps.selectedProjectId!==''){
+      if(selectedProjectProps.selectedProjectId!=='' && selectedProjectProps.selectedProjectId){
+        console.log(selectedProjectProps.selectedProjectId);
+        
         populateProjectContent(selectedProjectProps.selectedProjectId);
         // setSelectedProjectContent([]);  
       }
