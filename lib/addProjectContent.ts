@@ -3,7 +3,7 @@ import axios from "axios";
 
 export default async function createContentObject(projectId: string,userKey: string,selectedProjectContent: Array<ProjectContentProps> | undefined){
     try{
-        const req = await axios.post(`http://localhost:3000/api/addProjectContent/${projectId}`,{
+        const req = await axios.post(`https://manageless.vercel.app/api/addProjectContent/${projectId}`,{
             apiKey:userKey,
             token:JSON.parse(localStorage.getItem('token') || ""),
             content:selectedProjectContent,

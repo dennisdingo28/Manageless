@@ -2,7 +2,7 @@ import axios from "axios";
 
 export default async function retrieveProject(id: string){
     try{
-        const req = await axios.get(`http://localhost:3000/api/getProject/${id}`);
+        const req = await axios.get(`https://manageless.vercel.app/api/getProject/${id}`);
         console.log(req);
         
         return req;
